@@ -88,10 +88,11 @@ main = Target(
 
 py2exe_options = dict(
     packages=["reportlab"],
-    includes=['sip'],
+    includes=['sip', 'PyQt4'],
+    excludes=['tkinter'],
     optimize=0,
-    compressed=False,  # uncompressed may or may not have a faster startup
-    bundle_files=3,
+    compressed=True,  # uncompressed may or may not have a faster startup
+    bundle_files=1,
     dist_dir='dist',
 )
 
