@@ -10,10 +10,8 @@ from PyQt4.QtCore import Qt
 from static import Constants
 
 from ui.common import CMainWindow
-from ui.menutoolbar import MenuToolBar
-from ui.menubar import MenuBar
 from ui.statusbar import GStatusBar
-from ui.example import ExampleViewWidget
+from ui.home import HomeViewWidget
 
 
 class MainWindow(CMainWindow):
@@ -23,15 +21,11 @@ class MainWindow(CMainWindow):
 
         self.setWindowIcon(QIcon.fromTheme(
             '', QIcon(u"{}".format(Constants.APP_LOGO))))
-        self.menubar = MenuBar(self)
-        self.setMenuBar(self.menubar)
-        self.toolbar = MenuToolBar(self)
-        self.addToolBar(Qt.LeftToolBarArea, self.toolbar)
 
         self.statusbar = GStatusBar(self)
         self.setStatusBar(self.statusbar)
 
-        self.change_context(ExampleViewWidget)
+        self.change_context(HomeViewWidget)
 
     def resizeEvent(self, event):
         """lancé à chaque redimensionnement de la fenêtre"""

@@ -5,7 +5,8 @@ from __future__ import (
     unicode_literals, absolute_import, division, print_function)
 
 from PyQt4.QtCore import Qt, QSize
-from PyQt4.QtGui import (QMainWindow, QWidget, QTabBar, QIcon)
+from PyQt4.QtGui import (QMainWindow, QWidget, QLabel, QCommandLinkButton,
+                         QTabBar, QIcon, QDateTimeEdit)
 
 from static import Constants
 
@@ -58,3 +59,48 @@ class CWidget(QWidget):
 
     def open_dialog(self, dialog, modal=False, *args, **kwargs):
         return self.parentWidget().open_dialog(dialog, modal=modal, *args, **kwargs)
+
+
+class FormatDate(QDateTimeEdit):
+
+    def __init__(self, *args, **kwargs):
+        super(FormatDate, self).__init__(*args, **kwargs)
+        self.setDisplayFormat(u"dd/MM/yyyy")
+        self.setCalendarPopup(True)
+
+
+class FormLabel(QLabel):
+
+    def __init__(self, text, parent=None):
+        QLabel.__init__(self, text, parent)
+        self.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+
+class Button(QCommandLinkButton):
+
+    def __init__(self, *args, **kwargs):
+        super(Button, self).__init__(*args, **kwargs)
+        self.setAutoDefault(True)
+        self.setIcon(QIcon.fromTheme('', QIcon('')))
+        self.setCursor(Qt.PointingHandCursor)
+        # self.setCursor(Qt.ForbiddenCursor)
+        # self.setFixedSize(100, 40)
+
+
+class Deleted_btn(Button):
+
+    def __init__(self, *args, **kwargs):
+        super(Deleted_btn, self).__init__(*args, **kwargs)
+        self.setIcon(QIcon.fromTheme('edit-delete', QIcon('')))
+        css = """
+                background-color:#fc8d83;
+                border-radius:6px;
+                border:1px solid #d83526;
+                color:#ffffff;
+                font-family:arial;
+                font-size:15px;
+                font-weight:bold;
+                padding:6px 24px;
+                text-decoration:none;
+                """
+        self.setStyleSheet(css)
