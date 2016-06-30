@@ -1,8 +1,5 @@
-# carapace
-Le squelette des projets PyQt.
-
-Commmande
-===
+# ramed-desktop
+Desktop UI to complement ODK Aggregate Export
 
 Requirements
 ~~~~~~~~~~~~
@@ -28,4 +25,3 @@ Once setup, create windows executable:
 
 Once windows binary is complete, create installer with:
     ``"C:\Program Files\NSIS\makensis.exe" installer.nsi``
-    
