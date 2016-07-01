@@ -8,16 +8,15 @@ from __future__ import (
 from os.path import expanduser
 from datetime import date
 
-from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout, QProgressBar,
-                         QGridLayout, QFileDialog, QGroupBox)
+from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout, QProgressBar, QDialog,
+                         QGridLayout, QFileDialog, QGroupBox, QWidget)
 from PyQt4.QtCore import Qt, QDate
 
 from static import Constants
 
-from PyQt4.QtGui import QFileDialog, QWidget
-
 from ui.common import (CWidget, FormatDate, FormLabel, Deleted_btn, Button)
 
+from ui.dialogue_box import dialogueViewWidget
 try:
     unicode
 except:
@@ -37,10 +36,9 @@ class HomeViewWidget(CWidget):
         self.browse_file_btn = Button(
             "Sélection fichier JSON ODK Aggregate ...", self)
         self.browse_file_btn.clicked.connect(self.getJsonFile)
-        # self.browse_file_btn.setMaximumHeight(40)
-        # self.browse_file_btn.clicked.connect()
         self.file_name_field = FormLabel("Aucun fichier")
         self.run_btn = Button("Lancer")
+        self.run_btn.clicked.connect(self.run_generation)
         self.cancel_btn = Deleted_btn("Annuler")
 
         gridBox = QGridLayout()
@@ -59,6 +57,12 @@ class HomeViewWidget(CWidget):
         vBox_.addLayout(gridBox)
         vBox.addLayout(vBox_)
         self.setLayout(vBox)
+
+    def run_generation(self):
+        # TODO Faire le check si la VM ODK Aggregate.
+
+        if dialogueViewWidget(parent=None).exec_() == QDialog.Accepted:
+            print("Lancement ...")
 
     def getJsonFile(self):
         name_select_f = QFileDialog.getOpenFileName(
