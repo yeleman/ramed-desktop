@@ -87,10 +87,10 @@ class Button(QPushButton):
         # self.setFixedSize(100, 40)
 
 
-class Deleted_btn(Button):
+class DeletedBtn(Button):
 
     def __init__(self, *args, **kwargs):
-        super(Deleted_btn, self).__init__(*args, **kwargs)
+        super(DeletedBtn, self).__init__(*args, **kwargs)
         self.setIcon(QIcon.fromTheme('edit-delete', QIcon('')))
         css = """
                 background-color:#fc8d83;

@@ -14,7 +14,7 @@ from PyQt4.QtCore import Qt, QDate
 
 from static import Constants
 
-from ui.common import (CWidget, FormatDate, FormLabel, Deleted_btn, Button)
+from ui.common import (CWidget, FormatDate, FormLabel, DeletedBtn, Button)
 
 from ui.dialogue_box import dialogueViewWidget
 try:
@@ -40,7 +40,7 @@ class HomeViewWidget(CWidget):
         self.run_btn = Button("Lancer")
         self.run_btn.setEnabled(False)
         self.run_btn.clicked.connect(self.run_generation)
-        self.cancel_btn = Deleted_btn("Annuler")
+        self.cancel_btn = DeletedBtn("Annuler")
 
         gridBox = QGridLayout()
         gridBox.addWidget(self.browse_file_btn, 0, 0)
@@ -81,7 +81,7 @@ class HomeViewWidget(CWidget):
             self.run_btn.setEnabled(True)
 
     def selectDirectory(self):
-        self.destFolder = str(
+        self.destFolder = unicode(
             QFileDialog.getExistingDirectory(self, "Selection dossier"))
         self.destination_btn.setText(self.destFolder)
 
