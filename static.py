@@ -9,9 +9,6 @@ ROOT_DIR = os.path.dirname(os.path.abspath('__file__'))
 
 class Constants(object):
 
-    def __init__(self):
-        CConstants.__init__(self)
-
     # ---------- Application ----------- #
 
     NAME_MAIN = "main.py"

@@ -24,7 +24,7 @@ class ConfirmationViewWidget(CWidget):
 
     def __init__(self, parent=0, *args, **kwargs):
         super(ConfirmationViewWidget, self).__init__(
-            parent=parent, *args, **kwargs)
+            parent=parent)
         self.parentWidget().setWindowTitle("Export des fichier de collect RAMED")
 
         sumission_totals = 342
@@ -32,7 +32,7 @@ class ConfirmationViewWidget(CWidget):
         period = "le 16 juin 2016 et le 30 juin 2016"
         nb_media = 856
         self.logoField = QLabel()
-        pixmap = QPixmap(os.path.join(Constants.img_media, 'alert.png'))
+        pixmap = QPixmap(os.path.join(Constants.img_media, 'success.png'))
         self.logoField.setPixmap(pixmap)
 
         self.msgLabel = FormLabel("""

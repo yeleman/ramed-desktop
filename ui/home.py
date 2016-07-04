@@ -31,7 +31,6 @@ class HomeViewWidget(CWidget):
 
         self.createDestinationGroupBox()
         self.createPeriodeGroupBox()
-        self.createProgressGroupBox()
 
         self.browse_file_btn = Button(
             "Sélection fichier JSON ODK Aggregate ...", self)
@@ -42,26 +41,24 @@ class HomeViewWidget(CWidget):
         self.run_btn.clicked.connect(self.run_generation)
         self.cancel_btn = DeletedBtn("Annuler")
 
-        gridBox = QGridLayout()
-        gridBox.addWidget(self.browse_file_btn, 0, 0)
-        gridBox.addWidget(self.file_name_field, 1, 0)
-        gridBox.addWidget(self.destinationGroupBox, 2, 0)
-        gridBox.addWidget(self.periodGroupBox, 3, 0)
-        gridBox.addWidget(self.run_btn, 3, 2)
-        gridBox.addWidget(self.progressGroupBox, 4, 0)
-        gridBox.addWidget(self.cancel_btn, 4, 2)
-        # gridBox.setColumnStretch(3, 1)
-        gridBox.setRowStretch(5, 2)
+        self.gridBox = QGridLayout()
+        self.gridBox.addWidget(self.browse_file_btn, 0, 0)
+        self.gridBox.addWidget(self.file_name_field, 1, 0)
+        self.gridBox.addWidget(self.destinationGroupBox, 2, 0)
+        self.gridBox.addWidget(self.periodGroupBox, 3, 0)
+        self.gridBox.addWidget(self.run_btn, 3, 2)
+        self.gridBox.setRowStretch(5, 2)
 
         vBox = QVBoxLayout()
-        vBox_ = QVBoxLayout()
-        vBox_.addLayout(gridBox)
-        vBox.addLayout(vBox_)
+        vBox.addLayout(self.gridBox)
         self.setLayout(vBox)
 
     def run_generation(self):
         print("run_generation")
         self.parentWidget().exporter.check_aggregate_presence()
+        # self.createProgressGroupBox()
+        # self.gridBox.addWidget(self.progressGroupBox, 4, 0)
+        # self.gridBox.addWidget(self.cancel_btn, 4, 2)
 
     def display_noaggregate_confirmation(self):
         if dialogueViewWidget(parent=None).exec_() == QDialog.Accepted:

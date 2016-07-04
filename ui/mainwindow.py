@@ -12,6 +12,7 @@ from static import Constants
 from ui.common import CMainWindow
 from ui.statusbar import GStatusBar
 from ui.home import HomeViewWidget
+from ui.confirmation import ConfirmationViewWidget
 from tools.ramed_export import RamedExporter
 
 
@@ -82,6 +83,9 @@ class MainWindow(CMainWindow):
     @pyqtSlot(int, int)
     def export_ended(self, nb_instances_successful, nb_instances_failed):
         print("export_ended", nb_instances_successful, nb_instances_failed)
+        self.change_context(ConfirmationViewWidget,
+                            nb_instances_successful=nb_instances_successful,
+                            nb_instances_failed=nb_instances_failed)
 
     @pyqtSlot(str)
     def export_raised_error(self, error_message):
