@@ -5,13 +5,14 @@ from __future__ import (
     unicode_literals, absolute_import, division, print_function)
 
 from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, pyqtSlot
 
 from static import Constants
 
 from ui.common import CMainWindow
 from ui.statusbar import GStatusBar
 from ui.home import HomeViewWidget
+from tools.ramed_export import RamedExporter
 
 
 class MainWindow(CMainWindow):
@@ -26,6 +27,9 @@ class MainWindow(CMainWindow):
         self.setStatusBar(self.statusbar)
 
         self.change_context(HomeViewWidget)
+
+        # exporter
+        self.exporter = RamedExporter(main_window=self)
 
     def resizeEvent(self, event):
         """lancé à chaque redimensionnement de la fenêtre"""
@@ -44,3 +48,41 @@ class MainWindow(CMainWindow):
         d.setModal(modal)
         d.setWindowOpacity(opacity)
         d.exec_()
+
+    @pyqtSlot()
+    def check_started(self):
+        print("check started")
+
+    @pyqtSlot(bool, str)
+    def check_ended(self, succeeded, error_message):
+        print("check ended", succeeded, error_message)
+        if succeeded:
+            self.view_widget.launch_export()
+        else:
+            self.view_widget.display_noaggregate_confirmation()
+
+    @pyqtSlot()
+    def parsing_started(self):
+        print("parsing started")
+
+    @pyqtSlot(bool, int, str)
+    def parsing_ended(self, succeeded, nb_instances, error_message):
+        print("parsing ended", succeeded, nb_instances, error_message)
+        if succeeded:
+            self.exporter.start()
+
+    @pyqtSlot(str)
+    def export_started(self):
+        print("export_started")
+
+    @pyqtSlot(str)
+    def export_failed(self, error_message):
+        print("export_failed", error_message)
+
+    @pyqtSlot(int, int)
+    def export_ended(self, nb_instances_successful, nb_instances_failed):
+        print("export_ended", nb_instances_successful, nb_instances_failed)
+
+    @pyqtSlot(str)
+    def export_raised_error(self, error_message):
+        print("export_raised_error", error_message)
