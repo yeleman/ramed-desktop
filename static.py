@@ -30,3 +30,5 @@ class Constants(object):
 
     # ---------- Organization ---------- #
     NAME_ORGA = "RAMED"
+
+    AGGREGATE_URL = "http://192.168.5.142"

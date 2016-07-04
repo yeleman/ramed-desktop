@@ -59,10 +59,16 @@ class HomeViewWidget(CWidget):
         self.setLayout(vBox)
 
     def run_generation(self):
-        # TODO Faire le check si la VM ODK Aggregate.
+        print("run_generation")
+        self.parentWidget().exporter.check_aggregate_presence()
 
+    def display_noaggregate_confirmation(self):
         if dialogueViewWidget(parent=None).exec_() == QDialog.Accepted:
-            print("Lancement ...")
+            self.launch_export()
+
+    def launch_export(self):
+        print("Lancement ...")
+        self.parentWidget().exporter.parse(self.file_name_field.text())
 
     def getJsonFile(self):
         name_select_f = QFileDialog.getOpenFileName(

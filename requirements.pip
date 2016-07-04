@@ -2,3 +2,5 @@ openpyxl==2.3.5
 peewee==2.8.1
 py2exe==0.9.2.2
 reportlab==3.3.0
+ijson==2.3
+requests==2.10.0
