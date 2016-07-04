@@ -44,14 +44,14 @@ class HomeViewWidget(CWidget):
 
         gridBox = QGridLayout()
         gridBox.addWidget(self.browse_file_btn, 0, 0)
-        gridBox.addWidget(self.file_name_field, 0, 2)
-        gridBox.addWidget(self.destinationGroupBox, 1, 0)
-        gridBox.addWidget(self.periodGroupBox, 2, 0)
-        gridBox.addWidget(self.run_btn, 2, 2)
-        gridBox.addWidget(self.progressGroupBox, 3, 0)
-        gridBox.addWidget(self.cancel_btn, 3, 2)
-        gridBox.setColumnStretch(3, 1)
-        gridBox.setRowStretch(4, 1)
+        gridBox.addWidget(self.file_name_field, 1, 0)
+        gridBox.addWidget(self.destinationGroupBox, 2, 0)
+        gridBox.addWidget(self.periodGroupBox, 3, 0)
+        gridBox.addWidget(self.run_btn, 3, 2)
+        gridBox.addWidget(self.progressGroupBox, 4, 0)
+        gridBox.addWidget(self.cancel_btn, 4, 2)
+        # gridBox.setColumnStretch(3, 1)
+        gridBox.setRowStretch(5, 2)
 
         vBox = QVBoxLayout()
         vBox_ = QVBoxLayout()
@@ -72,13 +72,13 @@ class HomeViewWidget(CWidget):
         self.parentWidget().exporter.parse(self.file_name_field.text())
 
     def getJsonFile(self):
+        self.file_name_field.setText("Aucun fichier")
+        self.run_btn.setEnabled(False)
         name_select_f = QFileDialog.getOpenFileName(
             QWidget(), "Open Data File", "", "Json data files (*.json)")
         if name_select_f != "":
             self.file_name_field.setText(name_select_f)
             self.run_btn.setEnabled(True)
-        else:
-            self.file_name_field.setText("Aucun fichier")
 
     def selectDirectory(self):
         self.destFolder = str(
