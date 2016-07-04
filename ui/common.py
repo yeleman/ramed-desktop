@@ -5,7 +5,7 @@ from __future__ import (
     unicode_literals, absolute_import, division, print_function)
 
 from PyQt4.QtCore import Qt, QSize
-from PyQt4.QtGui import (QMainWindow, QWidget, QLabel, QCommandLinkButton,
+from PyQt4.QtGui import (QMainWindow, QWidget, QLabel, QPushButton,
                          QTabBar, QIcon, QDateTimeEdit)
 
 from static import Constants
@@ -16,9 +16,9 @@ class CMainWindow(QMainWindow):
     def __init__(self, parent=0, *args, **kwargs):
         QMainWindow.__init__(self)
 
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint)
         self.setWindowIcon(QIcon.fromTheme('logo', QIcon(
             u"{}logo.png".format(Constants.img_media))))
-
         self.wc = self.width()
         self.hc = self.height()
         self.resize(self.wc, self.hc)
@@ -76,7 +76,7 @@ class FormLabel(QLabel):
         self.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
 
-class Button(QCommandLinkButton):
+class Button(QPushButton):
 
     def __init__(self, *args, **kwargs):
         super(Button, self).__init__(*args, **kwargs)

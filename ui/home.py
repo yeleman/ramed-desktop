@@ -38,6 +38,7 @@ class HomeViewWidget(CWidget):
         self.browse_file_btn.clicked.connect(self.getJsonFile)
         self.file_name_field = FormLabel("Aucun fichier")
         self.run_btn = Button("Lancer")
+        self.run_btn.setEnabled(False)
         self.run_btn.clicked.connect(self.run_generation)
         self.cancel_btn = Deleted_btn("Annuler")
 
@@ -67,11 +68,13 @@ class HomeViewWidget(CWidget):
     def getJsonFile(self):
         name_select_f = QFileDialog.getOpenFileName(
             QWidget(), "Open Data File", "", "Json data files (*.json)")
-        self.file_name_field.setText(name_select_f)
-        print(name_select_f)
+        if name_select_f != "":
+            self.file_name_field.setText(name_select_f)
+            self.run_btn.setEnabled(True)
+        else:
+            self.file_name_field.setText("Aucun fichier")
 
     def selectDirectory(self):
-
         self.destFolder = str(
             QFileDialog.getExistingDirectory(self, "Selection dossier"))
         self.destination_btn.setText(self.destFolder)
@@ -101,7 +104,7 @@ class HomeViewWidget(CWidget):
         self.periodGroupBox.setLayout(layout)
 
     def createProgressGroupBox(self):
-        self.progressbarLabel = "Progression"
+        self.progressbarLabel = "Export en cours...  34/403"
         self.progressGroupBox = QGroupBox(self.progressbarLabel)
         layout = QGridLayout()
 
