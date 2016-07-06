@@ -8,9 +8,14 @@ import logging
 
 import ijson
 import requests
+import copy
+import os
 
 from PyQt4.QtCore import QObject, pyqtSignal
+from path import Path
 
+from tools.ramed_form_pdf_export import gen_pdf_export
+from tools.ramed_instance import RamedInstance
 from static import Constants
 
 logger = logging.getLogger(__name__)
@@ -73,16 +78,16 @@ class RamedExporter(QObject):
         nb_instances = 0
         error_message = ""
         try:
-            items = ijson.items(open(self.fname, 'r'), 'item')
-            nb_instances = len([i for i in items
-                                if isinstance(i, dict)
-                                and i.get('instanceID')])
+            with open(self.fname, encoding="UTF-8", mode='r') as f:
+                items = ijson.items(f, 'item')
+                nb_instances = len([i for i in items
+                                    if isinstance(i, dict)
+                                    and i.get('instanceID')])
         except IOError:
             error_message = "Unable to read file"
         except ValueError:
             error_message = "File is not a valid JSON"
         except Exception as e:
-            print(e)
             error_message = repr(e)
         else:
             success = True
@@ -91,4 +96,43 @@ class RamedExporter(QObject):
 
     def start(self):
         self.export_started.emit()
+        with open(self.fname, encoding="UTF-8", mode='r') as f:
+            for instance_dict in ijson.items(f, 'item'):
+                instance = RamedInstance(instance_dict)
+                self.export_single_instance(instance)
+                self.export_medias(instance)
         self.export_ended.emit(1, 3)
+
+    @property
+    def export_folder(self):
+        fpath = os.path.abspath("Collecte")
+        Path(fpath).makedirs_p()
+        return fpath
+
+    def export_single_instance(self, instance):
+        fname, fpath = gen_pdf_export(self.export_folder, instance)
+
+    def export_medias(self, instance):
+        medias = copy.deepcopy(instance.medias)
+
+        output_dir = os.path.join(self.export_folder, instance.folder_name)
+        Path(output_dir).makedirs_p()
+
+        for key, media in medias.items():
+            url = media.get('url').replace('http://aggregate.defaultdomain',
+                                           Constants.AGGREGATE_URL)
+            fname = "{key}_{fname}".format(key=key,
+                                           fname=media.get('filename'))
+            fpath = os.path.join(output_dir, fname)
+            try:
+                req = requests.get(url)
+                assert req.status_code == 200
+                with open(fpath, 'wb') as f:
+                    f.write(req.content)
+            except (AssertionError, IOError, Exception) as e:
+                print(repr(e))
+                success = False
+            else:
+                success = True
+            medias[key].update({'success': success})
+        return medias

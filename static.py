@@ -10,7 +10,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath('__file__'))
 class Constants(object):
 
     def __init__(self):
-        CConstants.__init__(self)
+        super(Constants, self).__init__()
 
     # ---------- Application ----------- #
 
@@ -25,10 +25,11 @@ class Constants(object):
     AUTOR = u"Yeleman s.a.r.l"
     EMAIL_AUT = u"reg@yeleman.com"
     TEL_AUT = u"+223 73 12 08 96"
-    ADRESS_AUT = u"Hipprodrome, rue 240 porte 1068 \n  BPE. 3713 - Bamako, Mali"
+    ADRESS_AUT = u"Hipprodrome, rue 240 porte 1068\nBPE. 3713 - Bamako, Mali"
     ORG_AUT = u"Copyright © RAMED"
 
     # ---------- Organization ---------- #
     NAME_ORGA = "RAMED"
 
+    WORKING_DIR = os.path.dirname(os.path.abspath(__file__))
     AGGREGATE_URL = "http://192.168.5.142"
