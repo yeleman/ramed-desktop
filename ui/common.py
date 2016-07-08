@@ -5,9 +5,9 @@
 from __future__ import (
     unicode_literals, absolute_import, division, print_function)
 
-from PyQt4.QtCore import Qt, QSize
+from PyQt4.QtCore import Qt, QDate
 from PyQt4.QtGui import (QMainWindow, QWidget, QLabel, QPushButton,
-                         QTabBar, QIcon, QDateTimeEdit)
+                         QIcon, QDateTimeEdit)
 
 from static import Constants
 
@@ -68,6 +68,9 @@ class FormatDate(QDateTimeEdit):
         super(FormatDate, self).__init__(*args, **kwargs)
         self.setDisplayFormat(u"dd/MM/yyyy")
         self.setCalendarPopup(True)
+
+    def setPythonDate(self, value):
+        self.setDate(QDate(value))
 
 
 class FormLabel(QLabel):

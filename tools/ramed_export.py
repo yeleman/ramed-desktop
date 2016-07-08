@@ -10,6 +10,7 @@ import ijson
 import requests
 import copy
 import os
+import datetime
 
 from PyQt4.QtCore import QObject, pyqtSignal
 from path import Path
@@ -18,7 +19,7 @@ from tools.ramed_form_pdf_export import gen_pdf_export
 from tools.ramed_instance import RamedInstance
 from static import Constants
 
-TIMEOUT = 2
+TIMEOUT = 1
 logger = logging.getLogger(__name__)
 
 
@@ -72,18 +73,22 @@ class RamedExporter(QObject):
         finally:
             self.check_ended.emit(success, error_message)
 
-    def parse(self, fname):
+    def parse(self, destination_folder, fname, from_date, to_date):
         self.parsing_started.emit()
+
         self.fname = fname
+        self.destination_folder = destination_folder
+        Path(destination_folder).makedirs_p()
+        self.from_date = from_date
+        self.to_date = to_date
+
         success = False
         nb_instances = 0
         error_message = ""
         try:
             with open(self.fname, encoding="UTF-8", mode='r') as f:
                 items = ijson.items(f, 'item')
-                nb_instances = len([i for i in items
-                                    if isinstance(i, dict)
-                                    and i.get('instanceID')])
+                nb_instances = len(list(filter(self.submission_filter, items)))
         except IOError:
             error_message = "Unable to read file"
         except ValueError:
@@ -95,28 +100,36 @@ class RamedExporter(QObject):
         finally:
             self.parsing_ended.emit(success, nb_instances, error_message)
 
+    def submission_filter(self, instance_dict):
+        try:
+            instance_id = instance_dict.get('instanceID') or None
+            instance_date = datetime.date(
+                *[int(x) for x in instance_dict.get('date').split('-')[:3]])
+            assert instance_id
+            assert instance_date >= self.from_date
+            assert instance_date <= self.to_date
+            return True
+        except:
+            return False
+
     def start(self):
         self.export_started.emit()
         with open(self.fname, encoding="UTF-8", mode='r') as f:
-            for instance_dict in ijson.items(f, 'item'):
+            for instance_dict in filter(self.submission_filter,
+                                        ijson.items(f, 'item')):
                 instance = RamedInstance(instance_dict)
                 self.export_single_instance(instance)
                 self.export_medias(instance)
         self.export_ended.emit(1, 3)
 
-    @property
-    def export_folder(self):
-        fpath = os.path.abspath("Collecte")
-        Path(fpath).makedirs_p()
-        return fpath
-
     def export_single_instance(self, instance):
-        fname, fpath = gen_pdf_export(self.export_folder, instance)
+        fname, fpath = gen_pdf_export(self.destination_folder, instance)
 
     def export_medias(self, instance):
         medias = copy.deepcopy(instance.medias)
 
-        output_dir = os.path.join(self.export_folder, instance.folder_name)
+        output_dir = os.path.join(self.destination_folder,
+                                  instance.folder_name)
         Path(output_dir).makedirs_p()
 
         for key, media in medias.items():

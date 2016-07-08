@@ -5,7 +5,7 @@ from __future__ import (
     unicode_literals, absolute_import, division, print_function)
 
 from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import Qt, pyqtSlot
+from PyQt4.QtCore import pyqtSlot
 
 from static import Constants
 
@@ -20,11 +20,8 @@ class MainWindow(CMainWindow):
 
     def __init__(self, width=None, height=None):
         CMainWindow.__init__(self)
-
-        # x, y, w, h = self.getGeometry()
-        # self.setGeometry(x, y, width, height)
+        self.setWindowTitle(Constants.APP_TITLE)
         self.resize(width, height)
-
         self.setWindowIcon(QIcon.fromTheme(
             '', QIcon(u"{}".format(Constants.APP_LOGO))))
 
@@ -62,7 +59,7 @@ class MainWindow(CMainWindow):
     def check_ended(self, succeeded, error_message):
         print("check ended", succeeded, error_message)
         if succeeded:
-            self.view_widget.launch_export()
+            self.view_widget.start_export()
         else:
             self.view_widget.display_noaggregate_confirmation()
 
