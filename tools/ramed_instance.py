@@ -21,11 +21,11 @@ class RamedInstance(dict):
 
     @property
     def prenom(self):
-        return self.get('prenom-enquete', "").strip().title() or None
+        return self.get('prenoms', "").strip().title() or None
 
     @property
     def nom(self):
-        return self.get('nom-enquete', "").strip().upper() or None
+        return self.get('nom', "").strip().upper() or None
 
     @property
     def name(self):
@@ -48,15 +48,15 @@ class RamedInstance(dict):
 
     @property
     def region(self):
-        return self.get('region-enquete').strip().upper() or None
+        return self.get('region').strip().upper() or None
 
     @property
     def cercle(self):
-        return self.get('cercle-enquete').strip().upper() or None
+        return self.get('cercle').strip().upper() or None
 
     @property
     def commune(self):
-        return self.get('commune-enquete').strip().upper() or None
+        return self.get('commune').strip().upper() or None
 
     @property
     def location(self):
