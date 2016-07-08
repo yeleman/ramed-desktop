@@ -17,7 +17,7 @@ app = QApplication(sys.argv)
 
 def main():
 
-    window = MainWindow()
+    window = MainWindow(width=400, height=300)
     window.show()
     sys.exit(app.exec_())
 

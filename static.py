@@ -18,11 +18,11 @@ class Constants(object):
     APP_LOGO = os.path.join(IMG_MEDIA, "logo.png")
     APP_LOGO_ICO = os.path.join(IMG_MEDIA, "logo.ico")
     # ---------- Autor ----------------- #
-    AUTOR = u"Yeleman s.a.r.l"
-    EMAIL_AUT = u"reg@yeleman.com"
-    TEL_AUT = u"+223 73 12 08 96"
+    AUTOR = u"yɛlɛman s.à.r.l"
+    EMAIL_AUT = u"info@yeleman.com"
+    TEL_AUT = u"(223) 76 33 30 05"
     ADRESS_AUT = u"Hipprodrome, rue 240 porte 1068\nBPE. 3713 - Bamako, Mali"
-    ORG_AUT = u"Copyright © RAMED"
+    ORG_AUT = u"© RAMED/UNICEF/YELEMAN"
 
     # ---------- Organization ---------- #
     NAME_ORGA = "RAMED"

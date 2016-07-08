@@ -18,8 +18,12 @@ from tools.ramed_export import RamedExporter
 
 class MainWindow(CMainWindow):
 
-    def __init__(self):
+    def __init__(self, width=None, height=None):
         CMainWindow.__init__(self)
+
+        # x, y, w, h = self.getGeometry()
+        # self.setGeometry(x, y, width, height)
+        self.resize(width, height)
 
         self.setWindowIcon(QIcon.fromTheme(
             '', QIcon(u"{}".format(Constants.APP_LOGO))))
