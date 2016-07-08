@@ -16,16 +16,32 @@ class RamedInstance(dict):
         super(RamedInstance, self).__init__(*args, **kwargs)
         self.parse()
 
+    @classmethod
+    def clean_prenoms(cls, prenoms):
+        return prenoms.strip().title() if prenoms else None
+
+    @classmethod
+    def clean_nom(cls, nom):
+        return nom.strip().upper() if nom else None
+
+    @classmethod
+    def clean_name(cls, nom, prenoms):
+        if prenoms and nom:
+            return "{nom} {prenoms}".format(prenoms=prenoms, nom=nom)
+        elif prenoms:
+            return prenoms
+        return nom
+
     def parse(self):
         self._medias = self.get_medias()
 
     @property
     def prenom(self):
-        return self.get('prenoms', "").strip().title() or None
+        return self.clean_prenoms(self.get('prenoms'))
 
     @property
     def nom(self):
-        return self.get('nom', "").strip().upper() or None
+        return self.clean_nom(self.get('nom'))
 
     @property
     def name(self):
