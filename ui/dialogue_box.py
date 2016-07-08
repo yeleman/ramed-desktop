@@ -28,7 +28,7 @@ class dialogueViewWidget(QDialog, CWidget):
 
         self.setWindowTitle(u"ODK Aggregate indisponible")
         self.logoField = QLabel()
-        pixmap = QPixmap(os.path.join(Constants.img_media, 'alert.png'))
+        pixmap = QPixmap(os.path.join(Constants.IMG_MEDIA, 'alert.png'))
         self.logoField.setPixmap(pixmap)
 
         self.intro = FormLabel(

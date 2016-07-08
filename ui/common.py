@@ -19,7 +19,7 @@ class CMainWindow(QMainWindow):
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint)
         self.setWindowIcon(QIcon.fromTheme('logo', QIcon(
-            u"{}logo.png".format(Constants.img_media))))
+            u"{}logo.png".format(Constants.IMG_MEDIA))))
         self.wc = self.width()
         self.hc = self.height()
         self.resize(self.wc, self.hc)

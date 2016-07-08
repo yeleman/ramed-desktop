@@ -43,7 +43,7 @@ Section "install"
 
   ; List of files/folders to copy
   File /r dist\*.*
-  File ressources\*.dll
+  File ..\ressources\*.dll
   File /r ${IMAGES}
 
 ;create desktop shortcut

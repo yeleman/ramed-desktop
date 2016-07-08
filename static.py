@@ -4,20 +4,19 @@
 
 import os
 
-ROOT_DIR = os.path.dirname(os.path.abspath('__file__'))
-
 
 class Constants(object):
 
     # ---------- Application ----------- #
 
+    WORKING_DIR = os.path.dirname(os.path.abspath(__file__))
     NAME_MAIN = "main.py"
     APP_NAME = "RAMED Desktop"
     APP_VERSION = u"1.0"
     APP_DATE = u"06/2016"
-    img_media = os.path.join(ROOT_DIR, "media", "img")
-    APP_LOGO = os.path.join(img_media, "logo.png")
-    APP_LOGO_ICO = os.path.join(img_media, "logo.ico")
+    IMG_MEDIA = os.path.join(WORKING_DIR, "media", "img")
+    APP_LOGO = os.path.join(IMG_MEDIA, "logo.png")
+    APP_LOGO_ICO = os.path.join(IMG_MEDIA, "logo.ico")
     # ---------- Autor ----------------- #
     AUTOR = u"Yeleman s.a.r.l"
     EMAIL_AUT = u"reg@yeleman.com"
@@ -27,6 +26,4 @@ class Constants(object):
 
     # ---------- Organization ---------- #
     NAME_ORGA = "RAMED"
-
-    WORKING_DIR = os.path.dirname(os.path.abspath(__file__))
     AGGREGATE_URL = "http://192.168.5.142"

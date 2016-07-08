@@ -32,7 +32,7 @@ class ConfirmationViewWidget(CWidget):
         period = "le 16 juin 2016 et le 30 juin 2016"
         nb_media = 856
         self.logoField = QLabel()
-        pixmap = QPixmap(os.path.join(Constants.img_media, 'success.png'))
+        pixmap = QPixmap(os.path.join(Constants.IMG_MEDIA, 'success.png'))
         self.logoField.setPixmap(pixmap)
 
         self.msgLabel = FormLabel("""
