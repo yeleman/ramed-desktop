@@ -194,7 +194,6 @@ class HomeViewWidget(CWidget):
                             .format(index=index,
                                     total=self.nb_instances)
         self.progression_groupbox.setTitle(progression_label)
-        print(self.progression_label)
 
     @pyqtSlot(bool, int, str)
     def parsing_ended(self, succeeded, nb_instances, error_message):

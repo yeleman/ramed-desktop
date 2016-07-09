@@ -19,12 +19,9 @@ from reportlab.platypus import Preformatted
 # from PyPDF2 import PdfFileWriter, PdfFileReader
 from path import Path
 
-from static import Constants
 from tools import create_shortcut
 from tools.ramed_instance import RamedInstance
 
-# TEMPLATE_PATH = os.path.join(Constants.WORKING_DIR,
-#                              "templates", "ramed-template.pdf")
 BLANK = "n/c"
 
 logger = logging.getLogger(__name__)
@@ -38,16 +35,7 @@ def gen_pdf_export(export_folder, instance):
     fname = "{name}.pdf".format(name=instance.name)
     fpath = os.path.join(output_folder, fname)
 
-    # shutil.copyfile(TEMPLATE_PATH, fpath)
-
-    # input_fp = open(TEMPLATE_PATH, "rb")
-    # template = PdfFileReader(input_fp)
-    # output = PdfFileWriter()
-
-    # nb_pages = template.getNumPages()
-
     # writting data
-
     def format_location(parts):
         return " / ".join([part for part in parts if part])
 
@@ -439,18 +427,6 @@ def gen_pdf_export(export_folder, instance):
     # saving to buffer
 
     c.save()
-
-    # merging template and data
-    # output_ro = open(fpath, u"rb")
-    # template_page = template.getPage(0)
-    # document = PdfFileReader(output_ro)
-    # template_page.mergePage(document.getPage(0))
-    # output.addPage(template_page)
-
-    # writing output to file
-    # output_fp = open(fpath, u"wb")
-    # output.write(output_fp)
-    # output_fp.close()
 
     # create shortcut
     shortcut_folder = os.path.join(export_folder, "PDF")
