@@ -56,6 +56,10 @@ class RamedInstance(dict):
         return self.get("instanceID")[5:13]
 
     @property
+    def ident(self):
+        return "{uuid}: {name}".format(uuid=self.uuids, name=self.name)
+
+    @property
     def folder_name(self):
         return "{nom}-{uuid}".format(
             nom=re.sub(r'\[\]/\;,\>\<\&\*\:\%\=\+\@\!\#\^\(\)\|\?',

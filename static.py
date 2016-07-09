@@ -26,5 +26,5 @@ class Constants(object):
     ORG_AUT = u"© RAMED/UNICEF/YELEMAN"
 
     NAME_ORGA = "RAMED"
-    AGGREGATE_URL = "http://192.168.5.142"
+    AGGREGATE_URL = "http://192.168.0.10"
     DEFAULT_FOLDER_NAME = "Données Collecte"

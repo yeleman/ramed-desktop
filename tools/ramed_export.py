@@ -5,6 +5,7 @@
 from __future__ import (unicode_literals, absolute_import,
                         division, print_function)
 import logging
+import json
 
 import ijson
 import requests
@@ -35,6 +36,12 @@ class RamedExporter(QObject):
 
     export_started = pyqtSignal(name='exportStarted')
 
+    # succeeded, index, total
+    instance_completed = pyqtSignal(bool, int, int, name='instanceCompleted')#
+
+    # ident-string, index
+    exporting_instance = pyqtSignal(str, int, name='exportingInstance')
+
     # error message
     export_failed = pyqtSignal(str, name='exportFailed')
 
@@ -47,6 +54,7 @@ class RamedExporter(QObject):
     def __init__(self, main_window):
         super(RamedExporter, self).__init__()
         self.main_window = main_window
+        self.nb_instances = 0
 
         # connect signals
         self.check_started.connect(main_window.check_started)
@@ -54,8 +62,14 @@ class RamedExporter(QObject):
 
         self.parsing_started.connect(main_window.parsing_started)
         self.parsing_ended.connect(main_window.parsing_ended)
+        self.parsing_ended.connect(main_window.view_widget.parsing_ended)
 
         self.export_started.connect(main_window.export_started)
+        self.exporting_instance.connect(main_window.exporting_instance)
+        self.exporting_instance.connect(
+            main_window.view_widget.exporting_instance)
+        self.instance_completed.connect(
+            main_window.view_widget.instance_completed)
         self.export_failed.connect(main_window.export_failed)
         self.export_ended.connect(main_window.export_ended)
         self.raised_error.connect(main_window.export_raised_error)
@@ -82,8 +96,8 @@ class RamedExporter(QObject):
         self.from_date = from_date
         self.to_date = to_date
 
-        success = False
         nb_instances = 0
+        success = False
         error_message = ""
         try:
             with open(self.fname, encoding="UTF-8", mode='r') as f:
@@ -98,6 +112,7 @@ class RamedExporter(QObject):
         else:
             success = True
         finally:
+            self.nb_instances = nb_instances
             self.parsing_ended.emit(success, nb_instances, error_message)
 
     def submission_filter(self, instance_dict):
@@ -114,13 +129,24 @@ class RamedExporter(QObject):
 
     def start(self):
         self.export_started.emit()
+        instances = []
+        counter = 1
         with open(self.fname, encoding="UTF-8", mode='r') as f:
             for instance_dict in filter(self.submission_filter,
                                         ijson.items(f, 'item')):
                 instance = RamedInstance(instance_dict)
+                self.exporting_instance.emit(instance.ident, counter)
                 self.export_single_instance(instance)
                 self.export_medias(instance)
-        self.export_ended.emit(1, 3)
+                instances.append(instance_dict)
+                self.instance_completed.emit(True, counter, self.nb_instances)
+                counter += 1
+
+        # copy JSON file to destination
+        fpath = os.path.join(self.destination_folder, "odk_data.json")
+        with open(fpath, encoding='UTF-8', mode='w') as f:
+            json.dump(instances, f)
+        self.export_ended.emit(counter - 1, 0)
 
     def export_single_instance(self, instance):
         fname, fpath = gen_pdf_export(self.destination_folder, instance)

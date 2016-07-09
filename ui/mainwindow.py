@@ -5,7 +5,7 @@ from __future__ import (
     unicode_literals, absolute_import, division, print_function)
 
 from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import pyqtSlot
+from PyQt4.QtCore import pyqtSlot, QThread
 
 from static import Constants
 
@@ -32,6 +32,10 @@ class MainWindow(CMainWindow):
 
         # exporter
         self.exporter = RamedExporter(main_window=self)
+        self.exporter_thread = QThread()
+        self.exporter.moveToThread(self.exporter_thread)
+        self.exporter.export_ended.connect(self.exporter_thread.quit)
+        self.exporter_thread.started.connect(self.exporter.start)
 
     def resizeEvent(self, event):
         """lancé à chaque redimensionnement de la fenêtre"""
@@ -71,22 +75,36 @@ class MainWindow(CMainWindow):
     def parsing_ended(self, succeeded, nb_instances, error_message):
         print("parsing ended", succeeded, nb_instances, error_message)
         if succeeded:
-            self.exporter.start()
+            self.exporter_thread.start()
 
     @pyqtSlot(str)
     def export_started(self):
         print("export_started")
 
+    @pyqtSlot(str, int)
+    def exporting_instance(self, ident, index):
+        print("exporting_instance")
+        self.statusbar.showMessage(ident)
+
+    @pyqtSlot(bool, int, int)
+    def instance_completed(self, succeeded, index, total):
+        print("instance_completed")
+
     @pyqtSlot(str)
     def export_failed(self, error_message):
         print("export_failed", error_message)
+        self.statusbar.reset()
 
     @pyqtSlot(int, int)
     def export_ended(self, nb_instances_successful, nb_instances_failed):
         print("export_ended", nb_instances_successful, nb_instances_failed)
+        self.statusbar.reset()
         self.change_context(ConfirmationViewWidget,
                             nb_instances_successful=nb_instances_successful,
-                            nb_instances_failed=nb_instances_failed)
+                            nb_instances_failed=nb_instances_failed,
+                            nb_medias_successful="?",
+                            nb_medias_failed="?",
+                            from_date="?", to_date="?")
 
     @pyqtSlot(str)
     def export_raised_error(self, error_message):

@@ -10,7 +10,7 @@ import datetime
 
 from PyQt4.QtGui import (QVBoxLayout, QProgressBar, QDialog,
                          QGridLayout, QFileDialog, QGroupBox)
-from PyQt4.QtCore import QDate
+from PyQt4.QtCore import QDate, pyqtSlot
 
 from static import Constants
 from ui.common import (CWidget, FormatDate, FormLabel, DeletedBtn, Button)
@@ -26,6 +26,7 @@ class HomeViewWidget(CWidget):
         self._json_fpath = None
         self._destination_folder = self.guess_destination()
         self._from_date, self._to_date = self.guess_dates()
+        self.nb_instances = 0
 
         self.setup_ui()
 
@@ -73,13 +74,12 @@ class HomeViewWidget(CWidget):
         self.cancel_btn = DeletedBtn("Annuler")
 
         # progression bar
-        self.progression_label = "Export en cours...  34/403"
-        self.progression_groupbox = QGroupBox(self.progression_label)
+        self.progression_groupbox = QGroupBox("...")
         layout = QGridLayout()
         self.progressbar = QProgressBar()
         self.progressbar.setMinimum(1)
         self.progressbar.setMaximum(100)
-        self.progressbar.setValue(20)
+        self.progressbar.setValue(0)
         layout.addWidget(self.progressbar, 0, 1)
         self.progression_groupbox.setLayout(layout)
 
@@ -161,7 +161,7 @@ class HomeViewWidget(CWidget):
 
     def directory_selected(self):
         path = QFileDialog.getExistingDirectory(
-            self, "Sélectionner le dossier")
+            self, "Sélectionner le dossier", self.destination_folder)
         if path:
             self.destination_folder = path
 
@@ -188,3 +188,26 @@ class HomeViewWidget(CWidget):
             fname=self.json_fpath,
             from_date=self.from_date,
             to_date=self.to_date)
+
+    def update_progress_label(self, index):
+        progression_label = "Export en cours...    {index}/{total}" \
+                            .format(index=index,
+                                    total=self.nb_instances)
+        self.progression_groupbox.setTitle(progression_label)
+        print(self.progression_label)
+
+    @pyqtSlot(bool, int, str)
+    def parsing_ended(self, succeeded, nb_instances, error_message):
+        if succeeded:
+            self.nb_instances = nb_instances
+
+    @pyqtSlot(str, int)
+    def exporting_instance(self, ident, index):
+        print("exporting_instance")
+        self.update_progress_label(index)
+
+    @pyqtSlot(bool, int, int)
+    def instance_completed(self, succeeded, index, total):
+        pc = index * 100 // total
+        self.progressbar.setValue(pc)
+        print(pc, "%")

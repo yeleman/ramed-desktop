@@ -6,12 +6,15 @@ from __future__ import (
 
 from PyQt4.QtGui import QStatusBar
 
-from static import Constants
-
 
 class GStatusBar(QStatusBar):
+
+    DEFAULT_MESSAGE = ""
 
     def __init__(self, parent):
 
         QStatusBar.__init__(self, parent)
-        self.showMessage(u"Bienvenue sur {}.".format(Constants.APP_NAME))
+        self.reset()
+
+    def reset(self):
+        self.showMessage(self.DEFAULT_MESSAGE)
