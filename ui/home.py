@@ -9,7 +9,8 @@ import os
 import datetime
 
 from PyQt4.QtGui import (QVBoxLayout, QProgressBar, QDialog,
-                         QGridLayout, QFileDialog, QGroupBox, QMessageBox)
+                         QGridLayout, QFileDialog, QGroupBox, QMessageBox,
+                         QHBoxLayout)
 from PyQt4.QtCore import QDate, pyqtSlot
 
 from static import Constants
@@ -196,13 +197,14 @@ class HomeViewWidget(CWidget):
 
     def add_progressbar(self):
         self.progressbar = QProgressBar()
-        self.progressbar.setMinimum(1)
+        self.progressbar.setMinimum(0)
         self.progressbar.setMaximum(100)
-        self.progressbar.setValue(0)
+        self.progressbar.reset()
+        self.progressbar.setTextVisible(False)
 
         self.progression_groupbox = QGroupBox("...")
-        progress_layout = QGridLayout()
-        progress_layout.addWidget(self.progressbar, 0, 1)
+        progress_layout = QHBoxLayout()
+        progress_layout.addWidget(self.progressbar)
         self.progression_groupbox.setLayout(progress_layout)
         self.gridBox.addWidget(self.progression_groupbox, 4, 0, 1, 2)
 
