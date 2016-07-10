@@ -34,8 +34,7 @@ class HomeViewWidget(CWidget):
         # json file selector
         self.json_groupbox = QGroupBox("Export ODK Aggregate")
         layout = QGridLayout()
-        self.browse_file_btn = Button(
-            "Sélection fichier JSON ODK Aggregate ...", self)
+        self.browse_file_btn = Button("", self)
         self.browse_file_btn.clicked.connect(self.json_file_selected)
         layout.addWidget(self.browse_file_btn, 1, 0)
         self.json_groupbox.setLayout(layout)
@@ -95,6 +94,8 @@ class HomeViewWidget(CWidget):
         vBox.addLayout(self.gridBox)
         self.setLayout(vBox)
 
+        self.json_fpath = None
+
     @property
     def json_fpath(self):
         return self._json_fpath
@@ -102,7 +103,8 @@ class HomeViewWidget(CWidget):
     @json_fpath.setter
     def json_fpath(self, value):
         self._json_fpath = value
-        self.browse_file_btn.setText(value)
+        self.browse_file_btn.setText(
+            value if value else "Sélection fichier JSON ODK Aggregate ...")
         self.update_start_button_state()
 
     @property
@@ -156,8 +158,7 @@ class HomeViewWidget(CWidget):
             self, "Choisir le fichier d'export JSON",
             self.json_fpath or self.guess_destination(),
             "Fichiers JSON (*.json)")
-        if fpath:
-            self.json_fpath = fpath
+        self.json_fpath = fpath if fpath else self.json_fpath
 
     def directory_selected(self):
         path = QFileDialog.getExistingDirectory(
