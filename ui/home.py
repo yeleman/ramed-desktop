@@ -132,7 +132,7 @@ class HomeViewWidget(CWidget):
         self.update_start_button_state()
 
     def guess_destination(self, root=None):
-        home_folder = root or os.path.expanduser("~")
+        home_folder = root or os.path.join(os.path.expanduser("~"), 'Desktop')
         return os.path.join(home_folder, Constants.DEFAULT_FOLDER_NAME)
 
     def guess_dates(self):
