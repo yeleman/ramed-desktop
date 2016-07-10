@@ -132,8 +132,8 @@ class HomeViewWidget(CWidget):
         self.update_start_button_state()
 
     def guess_destination(self, root=None):
-        home_folder = root or os.path.join(os.path.expanduser("~"), 'Desktop')
-        return os.path.join(home_folder, Constants.DEFAULT_FOLDER_NAME)
+        start_folder = root or os.path.join(os.path.expanduser("~"), 'Desktop')
+        return os.path.join(start_folder, Constants.DEFAULT_FOLDER_NAME)
 
     def guess_dates(self):
         to = datetime.date.today()
@@ -152,13 +152,13 @@ class HomeViewWidget(CWidget):
             self, "Choisir le fichier d'export JSON",
             self.json_fpath or self.guess_destination(),
             "Fichiers JSON (*.json)")
-        self.json_fpath = fpath if fpath else self.json_fpath
+        self.json_fpath = os.path.abspath(fpath) if fpath else self.json_fpath
 
     def directory_selected(self):
         path = QFileDialog.getExistingDirectory(
             self, "Sélectionner le dossier", self.destination_folder)
         if path:
-            self.destination_folder = path
+            self.destination_folder = os.path.abspath(path)
 
     def from_date_changed(self, new_date):
         self.from_date = new_date.toPyDate()
