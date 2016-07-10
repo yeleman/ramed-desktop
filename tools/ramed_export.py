@@ -54,6 +54,7 @@ class RamedExporter(QObject):
         self.main_window = main_window
         self.nb_instances = 0
         self.cancel_requested = None
+        self.is_running = False
 
         # connect signals
         self.check_started.connect(main_window.check_started)
@@ -136,6 +137,7 @@ class RamedExporter(QObject):
 
     def start(self):
         self.export_started.emit()
+        self.is_running = True
         instances = []
         counter = 1
         with open(self.fname, encoding="UTF-8", mode='r') as f:
@@ -162,6 +164,7 @@ class RamedExporter(QObject):
         fpath = os.path.join(self.destination_folder, "odk_data.json")
         with open(fpath, encoding='UTF-8', mode='w') as f:
             json.dump(instances, f)
+        self.is_running = False
         self.export_ended.emit(counter - 1, 0)
 
     def export_single_instance(self, instance):
@@ -209,3 +212,4 @@ class RamedExporter(QObject):
         # try to remove destination folder (if empty)
         Path(self.destination_folder).rmdir_p()
         self.cancel_requested = None
+        self.is_running = False

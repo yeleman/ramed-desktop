@@ -244,3 +244,5 @@ class HomeViewWidget(CWidget):
                             "Tous les fichiers créés ont été supprimés",
                             QMessageBox.Ok,
                             QMessageBox.NoButton)
+        if self.parentWidget().is_exiting:
+            self.parentWidget().do_close()

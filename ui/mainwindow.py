@@ -27,6 +27,24 @@ class MainWindow(CMainWindow):
             '', QIcon(u"{}".format(Constants.APP_LOGO))))
         self.reset()
 
+    # override
+    def closeEvent(self, event):
+        print("closeEvent")
+        if self.exporter.is_running:
+            event.ignore()
+
+            print("exporter running, cancelling...")
+            self.exporter.cancel()
+
+            # wait for canceled signal to exit (after warning popup)
+            self.is_exiting = True
+            return
+        super(MainWindow, self).closeEvent(event)
+
+    def do_close(self):
+        self.is_exiting = False
+        self.close()
+
     def reset(self):
         self.resize(self.requested_width, self.requested_height)
         self.statusbar = GStatusBar(self)
@@ -41,6 +59,7 @@ class MainWindow(CMainWindow):
         self.exporter.export_ended.connect(self.exporter_thread.quit)
         self.exporter.export_canceled.connect(self.exporter_thread.quit)
         self.exporter_thread.started.connect(self.exporter.start)
+        self.is_exiting = False
 
     def resizeEvent(self, event):
         """lancé à chaque redimensionnement de la fenêtre"""
