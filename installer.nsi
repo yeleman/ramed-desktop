@@ -44,6 +44,7 @@ Section "install"
   ; List of files/folders to copy
   File /r dist\*.*
   File /r Shortcut.exe
+  File /r ramed.config
   ; File ..\ressources\*.dll
   File /r ${IMAGES}
 

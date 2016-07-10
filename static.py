@@ -5,14 +5,27 @@
 import os
 import sys
 import platform
+import json
+
+IS_FROZEN = hasattr(sys, 'frozen')
+WORKING_DIR = os.path.dirname(os.path.abspath(sys.executable
+                              if IS_FROZEN else __file__))
+
+try:
+    with open(os.path.join(WORKING_DIR, 'ramed.config'),
+              encoding='UTF-8', mode='r') as f:
+        CONFIG = json.load(f)
+except Exception as ex:
+    if not isinstance(ex, IOError):
+        print(repr(ex))
+    CONFIG = {}
 
 
 class Constants(object):
 
     SYSTEM = platform.system()
-    IS_FROZEN = hasattr(sys, 'frozen')
-    WORKING_DIR = os.path.dirname(os.path.abspath(sys.executable
-                                  if IS_FROZEN else __file__))
+    IS_FROZEN = IS_FROZEN
+    WORKING_DIR = WORKING_DIR
     NAME_MAIN = "ramed.py"
     APP_NAME = "RAMED Desktop"
     APP_TITLE = "Export des fichiers de collecte RAMED"
@@ -29,6 +42,6 @@ class Constants(object):
     ORG_AUT = u"© RAMED/UNICEF/YELEMAN"
 
     NAME_ORGA = "RAMED"
-    AGGREGATE_URL = "http://192.168.0.10"
-    DEFAULT_FOLDER_NAME = "Données Collecte"
-    ODK_TIMEOUT = 1
+    AGGREGATE_URL = CONFIG.get('AGGREGATE_URL', "http://192.168.0.10")
+    DEFAULT_FOLDER_NAME = CONFIG.get('DEFAULT_FOLDER_NAME', "Données Collecte")
+    ODK_TIMEOUT = CONFIG.get('ODK_TIMEOUT', 1)
