@@ -6,7 +6,7 @@
 
   !define MUI_PRODUCT "RAMED Desktop"
   !define MUI_FILE "ramed"
-  !define MUI_VERSION "1.0"
+  !define MUI_VERSION "1.1"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define MEDIA "media"
   !define IMAGES "img"

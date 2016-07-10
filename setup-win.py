@@ -79,7 +79,7 @@ manifest_template = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 main = Target(
     # We can extend or override the VersionInfo of the base class:
-    version="1.0",
+    version="1.1",
     script=Constants.NAME_MAIN,  # path of the main script
     icon_resources=[(0, Constants.APP_LOGO_ICO)],
     other_resources=[(RT_MANIFEST, 1, (manifest_template % dict(
