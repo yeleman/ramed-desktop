@@ -41,11 +41,10 @@ class RamedExporter(QObject):
     # ident-string, index
     exporting_instance = pyqtSignal(str, int, name='exportingInstance')
 
-    # error message
-    export_failed = pyqtSignal(str, name='exportFailed')
-
     # number of successful exports, number of errors
     export_ended = pyqtSignal(int, int, name='exportEnded')
+
+    export_canceled = pyqtSignal(name='exportCanceled')
 
     # error message
     raised_error = pyqtSignal(str, name='ErrorRaised')
@@ -54,6 +53,7 @@ class RamedExporter(QObject):
         super(RamedExporter, self).__init__()
         self.main_window = main_window
         self.nb_instances = 0
+        self.cancel_requested = None
 
         # connect signals
         self.check_started.connect(main_window.check_started)
@@ -69,9 +69,16 @@ class RamedExporter(QObject):
             main_window.view_widget.exporting_instance)
         self.instance_completed.connect(
             main_window.view_widget.instance_completed)
-        self.export_failed.connect(main_window.export_failed)
         self.export_ended.connect(main_window.export_ended)
+        self.export_ended.connect(main_window.view_widget.export_ended)
+
+        self.export_canceled.connect(main_window.view_widget.export_canceled)
+        self.export_canceled.connect(main_window.export_canceled)
+
         self.raised_error.connect(main_window.export_raised_error)
+
+    def path_for(self, path):
+        return os.path.join(self.destination_folder, path)
 
     def check_aggregate_presence(self):
         self.check_started.emit()
@@ -134,14 +141,23 @@ class RamedExporter(QObject):
         with open(self.fname, encoding="UTF-8", mode='r') as f:
             for instance_dict in filter(self.submission_filter,
                                         ijson.items(f, 'item')):
+                if self.cancel_requested:
+                    break
                 instance = RamedInstance(instance_dict)
                 self.exporting_instance.emit(instance.ident, counter)
                 self.export_single_instance(instance)
+                if self.cancel_requested:
+                    break
                 self.export_medias(instance)
                 instances.append(instance_dict)
+                if self.cancel_requested:
+                    break
                 self.instance_completed.emit(True, counter, self.nb_instances)
                 counter += 1
-
+        if self.cancel_requested:
+            self.cleanup_canceled_export(instances)
+            self.export_canceled.emit()
+            return
         # copy JSON file to destination
         fpath = os.path.join(self.destination_folder, "odk_data.json")
         with open(fpath, encoding='UTF-8', mode='w') as f:
@@ -165,6 +181,7 @@ class RamedExporter(QObject):
                                            fname=media.get('filename'))
             fpath = os.path.join(output_dir, fname)
             try:
+                assert self.cancel_requested is not True
                 req = requests.get(url, timeout=Constants.ODK_TIMEOUT)
                 assert req.status_code == 200
                 with open(fpath, 'wb') as f:
@@ -176,3 +193,19 @@ class RamedExporter(QObject):
                 success = True
             medias[key].update({'success': success})
         return medias
+
+    def cancel(self):
+        self.cancel_requested = True
+
+    def cleanup_canceled_export(self, instances=[]):
+        print("cleanup_canceled_export")
+        # remove every instance's individual folder
+        for instance_dict in instances:
+            instance = RamedInstance(instance_dict)
+            Path(self.path_for(instance.folder_name)).rmtree_p()
+        # remove other static folders and files
+        Path(self.path_for("PDF")).rmtree_p()
+        Path(self.path_for('odk_data.json')).remove_p()
+        # try to remove destination folder (if empty)
+        Path(self.destination_folder).rmdir_p()
+        self.cancel_requested = None

@@ -9,9 +9,8 @@ import os
 
 from PyQt4.QtGui import (QVBoxLayout, QGridLayout, QLabel, QPixmap,
                          QSizePolicy)
-from PyQt4.QtCore import Qt
 
-from ui.common import (CWidget, Button, DeletedBtn, FormLabel)
+from ui.common import (CWidget, Button, FormLabel)
 
 from static import Constants
 
@@ -54,7 +53,6 @@ class ConfirmationViewWidget(CWidget):
         self.msgLabel.setSizePolicy(sizePolicy)
 
         self.newExportBtn = Button("Nouvel export")
-        # self.newExportBtn.setEnabled(False)
         self.newExportBtn.clicked.connect(self.parentWidget().reset)
 
         self.cancelBtn = Button("Quiter")

@@ -9,11 +9,11 @@ import os
 import datetime
 
 from PyQt4.QtGui import (QVBoxLayout, QProgressBar, QDialog,
-                         QGridLayout, QFileDialog, QGroupBox)
+                         QGridLayout, QFileDialog, QGroupBox, QMessageBox)
 from PyQt4.QtCore import QDate, pyqtSlot
 
 from static import Constants
-from ui.common import (CWidget, FormatDate, FormLabel, DeletedBtn, Button)
+from ui.common import (CWidget, FormatDate, FormLabel, CancelButton, Button)
 from ui.dialogue_box import dialogueViewWidget
 
 
@@ -67,28 +67,21 @@ class HomeViewWidget(CWidget):
         # start button
         self.start_button = Button("Lancer")
         self.start_button.setEnabled(False)
+        self.start_button.setDefault(True)
         self.start_button.clicked.connect(self.export_requested)
 
         # cancel button
-        self.cancel_btn = DeletedBtn("Annuler")
+        self.cancel_btn = CancelButton("Annuler")
+        self.cancel_btn.setEnabled(False)
+        self.cancel_btn.clicked.connect(self.cancel_export)
 
-        # progression bar
-        self.progression_groupbox = QGroupBox("...")
-        layout = QGridLayout()
-        self.progressbar = QProgressBar()
-        self.progressbar.setMinimum(1)
-        self.progressbar.setMaximum(100)
-        self.progressbar.setValue(0)
-        layout.addWidget(self.progressbar, 0, 1)
-        self.progression_groupbox.setLayout(layout)
-
-        # grid (list-like)
+        # grid
         self.gridBox = QGridLayout()
-        self.gridBox.addWidget(self.json_groupbox, 0, 0)
-        self.gridBox.addWidget(self.destination_groupbox, 1, 0)
-        self.gridBox.addWidget(self.period_groupbox, 2, 0)
+        self.gridBox.addWidget(self.json_groupbox, 0, 0, 1, 2)
+        self.gridBox.addWidget(self.destination_groupbox, 1, 0, 1, 2)
+        self.gridBox.addWidget(self.period_groupbox, 2, 0, 1, 2)
         self.gridBox.addWidget(self.start_button, 3, 0)
-        self.gridBox.setRowStretch(5, 2)
+        self.gridBox.addWidget(self.cancel_btn, 3, 1)
 
         vBox = QVBoxLayout()
         vBox.addLayout(self.gridBox)
@@ -178,8 +171,9 @@ class HomeViewWidget(CWidget):
 
     def display_noaggregate_confirmation(self):
         if dialogueViewWidget(parent=None).exec_() == QDialog.Accepted:
-            self.gridBox.addWidget(self.progression_groupbox, 4, 0)
-            # self.gridBox.addWidget(self.cancel_btn, 4, 2)
+            self.add_progressbar()
+            self.start_button.setEnabled(False)
+            self.cancel_btn.setEnabled(True)
             self.start_export()
 
     def start_export(self):
@@ -190,11 +184,31 @@ class HomeViewWidget(CWidget):
             from_date=self.from_date,
             to_date=self.to_date)
 
+    def cancel_export(self):
+        print("cancel")
+        self.parentWidget().exporter.cancel()
+
     def update_progress_label(self, index):
         progression_label = "Export en cours...    {index}/{total}" \
                             .format(index=index,
                                     total=self.nb_instances)
         self.progression_groupbox.setTitle(progression_label)
+
+    def add_progressbar(self):
+        self.progressbar = QProgressBar()
+        self.progressbar.setMinimum(1)
+        self.progressbar.setMaximum(100)
+        self.progressbar.setValue(0)
+
+        self.progression_groupbox = QGroupBox("...")
+        progress_layout = QGridLayout()
+        progress_layout.addWidget(self.progressbar, 0, 1)
+        self.progression_groupbox.setLayout(progress_layout)
+        self.gridBox.addWidget(self.progression_groupbox, 4, 0, 1, 2)
+
+    def remove_progressbar(self):
+        self.progression_groupbox.deleteLater()
+        self.progression_groupbox = None
 
     @pyqtSlot(bool, int, str)
     def parsing_ended(self, succeeded, nb_instances, error_message):
@@ -208,6 +222,23 @@ class HomeViewWidget(CWidget):
 
     @pyqtSlot(bool, int, int)
     def instance_completed(self, succeeded, index, total):
+        print("instance_completed")
         pc = index * 100 // total
         self.progressbar.setValue(pc)
-        print(pc, "%")
+
+    @pyqtSlot(int, int)
+    def export_ended(self, nb_instances_successful, nb_instances_failed):
+        self.cancel_btn.setEnabled(False)
+        self.start_button.setEnabled(True)
+
+    @pyqtSlot()
+    def export_canceled(self):
+        self.remove_progressbar()
+        self.cancel_btn.setEnabled(False)
+        self.start_button.setEnabled(True)
+        QMessageBox.warning(self,
+                            "Export annulé !",
+                            "L'export en cours a été annulé.\n"
+                            "Tous les fichiers créés ont été supprimés",
+                            QMessageBox.Ok,
+                            QMessageBox.NoButton)

@@ -87,24 +87,9 @@ class Button(QPushButton):
         self.setAutoDefault(True)
         self.setIcon(QIcon.fromTheme('', QIcon('')))
         self.setCursor(Qt.PointingHandCursor)
-        # self.setCursor(Qt.ForbiddenCursor)
-        # self.setFixedSize(100, 40)
 
 
-class DeletedBtn(Button):
+class CancelButton(Button):
 
     def __init__(self, *args, **kwargs):
-        super(DeletedBtn, self).__init__(*args, **kwargs)
-        self.setIcon(QIcon.fromTheme('edit-delete', QIcon('')))
-        css = """
-                background-color:#fc8d83;
-                border-radius:6px;
-                border:1px solid #d83526;
-                color:#ffffff;
-                font-family:arial;
-                font-size:15px;
-                font-weight:bold;
-                padding:6px 24px;
-                text-decoration:none;
-                """
-        self.setStyleSheet(css)
+        super(CancelButton, self).__init__(*args, **kwargs)

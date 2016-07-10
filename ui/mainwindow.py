@@ -39,6 +39,7 @@ class MainWindow(CMainWindow):
         self.exporter_thread = QThread()
         self.exporter.moveToThread(self.exporter_thread)
         self.exporter.export_ended.connect(self.exporter_thread.quit)
+        self.exporter.export_canceled.connect(self.exporter_thread.quit)
         self.exporter_thread.started.connect(self.exporter.start)
 
     def resizeEvent(self, event):
@@ -94,11 +95,6 @@ class MainWindow(CMainWindow):
     def instance_completed(self, succeeded, index, total):
         print("instance_completed")
 
-    @pyqtSlot(str)
-    def export_failed(self, error_message):
-        print("export_failed", error_message)
-        self.statusbar.reset()
-
     @pyqtSlot(int, int)
     def export_ended(self, nb_instances_successful, nb_instances_failed):
         print("export_ended", nb_instances_successful, nb_instances_failed)
@@ -109,6 +105,10 @@ class MainWindow(CMainWindow):
                             nb_medias_successful="?",
                             nb_medias_failed="?",
                             from_date="?", to_date="?")
+
+    @pyqtSlot()
+    def export_canceled(self):
+        self.statusbar.reset()
 
     @pyqtSlot(str)
     def export_raised_error(self, error_message):
