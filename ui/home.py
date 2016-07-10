@@ -174,11 +174,11 @@ class HomeViewWidget(CWidget):
     def export_requested(self):
         print("export_requested")
         self.parentWidget().exporter.check_aggregate_presence()
-        self.gridBox.addWidget(self.progression_groupbox, 4, 0)
-        # self.gridBox.addWidget(self.cancel_btn, 4, 2)
 
     def display_noaggregate_confirmation(self):
         if dialogueViewWidget(parent=None).exec_() == QDialog.Accepted:
+            self.gridBox.addWidget(self.progression_groupbox, 4, 0)
+            # self.gridBox.addWidget(self.cancel_btn, 4, 2)
             self.start_export()
 
     def start_export(self):
