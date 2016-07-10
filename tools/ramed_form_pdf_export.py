@@ -431,7 +431,7 @@ def gen_pdf_export(export_folder, instance):
     # create shortcut
     shortcut_folder = os.path.join(export_folder, "PDF")
     Path(shortcut_folder).makedirs_p()
-    shortcut_fname = "{}.lnk".format(fname.rsplit('.', 1)[0])
+    shortcut_fname = "{}.lnk".format(instance.folder_name)
     create_shortcut(fpath, os.path.join(shortcut_folder, shortcut_fname))
 
     return fname, fpath
