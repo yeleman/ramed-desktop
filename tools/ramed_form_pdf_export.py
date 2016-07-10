@@ -2,29 +2,19 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 
-from __future__ import (unicode_literals, absolute_import,
-                        division, print_function)
-import logging
 import os
-import shutil
 import datetime
 
-# from reportlab.platypus import BaseDocTemplate, Paragraph, SimpleDocTemplate
-# from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
-from reportlab.platypus import Preformatted
-# from PyPDF2 import PdfFileWriter, PdfFileReader
 from path import Path
 
 from tools import create_shortcut
 from tools.ramed_instance import RamedInstance
+from app_logging import logger
 
 BLANK = "n/c"
-
-logger = logging.getLogger(__name__)
 
 
 def gen_pdf_export(export_folder, instance):
@@ -293,7 +283,7 @@ def gen_pdf_export(export_folder, instance):
         nb_enfant_acharge = get_int(enfant, 'nb_enfant_acharge')
 
         row -= interligne
-        print(name_autre_parent)
+        logger.debug(name_autre_parent)
         c.drawString(right_col, row, "{nb}. {enfant}".format(
             nb=nb + 1, enfant=concat([name_enfant or BLANK, naissance_enfant,
                                       "à {lieu}".format(

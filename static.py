@@ -7,6 +7,8 @@ import sys
 import platform
 import json
 
+from app_logging import logger
+
 IS_FROZEN = hasattr(sys, 'frozen')
 WORKING_DIR = os.path.dirname(os.path.abspath(sys.executable
                               if IS_FROZEN else __file__))
@@ -17,7 +19,7 @@ try:
         CONFIG = json.load(f)
 except Exception as ex:
     if not isinstance(ex, IOError):
-        print(repr(ex))
+        logger.exception(ex)
     CONFIG = {}
 
 

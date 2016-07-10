@@ -1,9 +1,6 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
-
-from __future__ import (
-    unicode_literals, absolute_import, division, print_function)
 
 import os
 import datetime
@@ -16,6 +13,7 @@ from PyQt4.QtCore import QDate, pyqtSlot
 from static import Constants
 from ui.common import (CWidget, FormatDate, FormLabel, CancelButton, Button)
 from ui.dialogue_box import dialogueViewWidget
+from app_logging import logger
 
 
 class HomeViewWidget(CWidget):
@@ -167,7 +165,7 @@ class HomeViewWidget(CWidget):
         self.to_date = new_date.toPyDate()
 
     def export_requested(self):
-        print("export_requested")
+        logger.debug("export_requested")
         self.parentWidget().exporter.check_aggregate_presence()
 
     def display_noaggregate_confirmation(self):
@@ -178,7 +176,7 @@ class HomeViewWidget(CWidget):
             self.start_export()
 
     def start_export(self):
-        print("Lancement ...")
+        logger.debug("Lancement ...")
         self.parentWidget().exporter.parse(
             destination_folder=self.destination_folder,
             fname=self.json_fpath,
@@ -186,7 +184,7 @@ class HomeViewWidget(CWidget):
             to_date=self.to_date)
 
     def cancel_export(self):
-        print("cancel")
+        logger.debug("cancel")
         self.parentWidget().exporter.cancel()
 
     def update_progress_label(self, index):
@@ -219,12 +217,12 @@ class HomeViewWidget(CWidget):
 
     @pyqtSlot(str, int)
     def exporting_instance(self, ident, index):
-        print("exporting_instance")
+        logger.debug("exporting_instance")
         self.update_progress_label(index)
 
     @pyqtSlot(bool, int, int)
     def instance_completed(self, succeeded, index, total):
-        print("instance_completed")
+        logger.debug("instance_completed")
         pc = index * 100 // total
         self.progressbar.setValue(pc)
 

@@ -2,13 +2,9 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 
-from __future__ import (
-    unicode_literals, absolute_import, division, print_function)
-
 import os
-# from sqlite3 import IntegrityError
-from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout, QGridLayout, QGroupBox,
-                         QPixmap, QDialog, QLabel, QTextEdit)
+from PyQt4.QtGui import (QHBoxLayout, QVBoxLayout, QGridLayout,
+                         QPixmap, QDialog, QLabel)
 
 from static import Constants
 from ui.common import (CWidget, Button, FormLabel)

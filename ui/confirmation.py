@@ -2,9 +2,6 @@
 # -*- encoding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 
-from __future__ import (
-    unicode_literals, absolute_import, division, print_function)
-
 import os
 
 from PyQt4.QtGui import (QVBoxLayout, QGridLayout, QLabel, QPixmap,
@@ -13,11 +10,6 @@ from PyQt4.QtGui import (QVBoxLayout, QGridLayout, QLabel, QPixmap,
 from ui.common import (CWidget, Button, FormLabel)
 
 from static import Constants
-
-try:
-    unicode
-except:
-    unicode = str
 
 
 class ConfirmationViewWidget(CWidget):

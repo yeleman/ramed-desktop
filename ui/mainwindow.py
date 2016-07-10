@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from __future__ import (
-    unicode_literals, absolute_import, division, print_function)
+# vim: ai ts=4 sts=4 et sw=4 nu
 
 from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import pyqtSlot, QThread
 
 from static import Constants
-
 from ui.common import CMainWindow
 from ui.statusbar import GStatusBar
 from ui.home import HomeViewWidget
 from ui.confirmation import ConfirmationViewWidget
 from tools.ramed_export import RamedExporter
+from app_logging import logger
 
 
 class MainWindow(CMainWindow):
@@ -29,11 +27,11 @@ class MainWindow(CMainWindow):
 
     # override
     def closeEvent(self, event):
-        print("closeEvent")
+        logger.debug("closeEvent")
         if self.exporter.is_running:
             event.ignore()
 
-            print("exporter running, cancelling...")
+            logger.debug("exporter running, cancelling...")
             self.exporter.cancel()
 
             # wait for canceled signal to exit (after warning popup)
@@ -81,11 +79,11 @@ class MainWindow(CMainWindow):
 
     @pyqtSlot()
     def check_started(self):
-        print("check started")
+        logger.debug("check started")
 
     @pyqtSlot(bool, str)
     def check_ended(self, succeeded, error_message):
-        print("check ended", succeeded, error_message)
+        logger.debug("check ended: {}, {}".format(succeeded, error_message))
         if succeeded:
             self.view_widget.start_export()
         else:
@@ -93,30 +91,32 @@ class MainWindow(CMainWindow):
 
     @pyqtSlot()
     def parsing_started(self):
-        print("parsing started")
+        logger.debug("parsing started")
 
     @pyqtSlot(bool, int, str)
     def parsing_ended(self, succeeded, nb_instances, error_message):
-        print("parsing ended", succeeded, nb_instances, error_message)
+        logger.debug("parsing ended: {}, {}, {}"
+                     .format(succeeded, nb_instances, error_message))
         if succeeded:
             self.exporter_thread.start()
 
     @pyqtSlot(str)
     def export_started(self):
-        print("export_started")
+        logger.debug("export_started")
 
     @pyqtSlot(str, int)
     def exporting_instance(self, ident, index):
-        print("exporting_instance")
+        logger.debug("exporting_instance")
         self.statusbar.showMessage(ident)
 
     @pyqtSlot(bool, int, int)
     def instance_completed(self, succeeded, index, total):
-        print("instance_completed")
+        logger.debug("instance_completed")
 
     @pyqtSlot(int, int)
     def export_ended(self, nb_instances_successful, nb_instances_failed):
-        print("export_ended", nb_instances_successful, nb_instances_failed)
+        logger.debug("export_ended: {}, {}"
+                     .format(nb_instances_successful, nb_instances_failed))
         self.statusbar.reset()
         self.change_context(ConfirmationViewWidget,
                             nb_instances_successful=nb_instances_successful,
@@ -131,4 +131,4 @@ class MainWindow(CMainWindow):
 
     @pyqtSlot(str)
     def export_raised_error(self, error_message):
-        print("export_raised_error", error_message)
+        logger.debug("export_raised_error: {}".format(error_message))

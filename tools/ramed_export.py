@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 
-from __future__ import (unicode_literals, absolute_import,
-                        division, print_function)
-import logging
 import json
 
 import ijson
@@ -19,8 +16,7 @@ from path import Path
 from tools.ramed_form_pdf_export import gen_pdf_export
 from tools.ramed_instance import RamedInstance
 from static import Constants
-
-logger = logging.getLogger(__name__)
+from app_logging import logger
 
 
 class RamedExporter(QObject):
@@ -189,8 +185,8 @@ class RamedExporter(QObject):
                 assert req.status_code == 200
                 with open(fpath, 'wb') as f:
                     f.write(req.content)
-            except (AssertionError, IOError, Exception) as e:
-                print(repr(e))
+            except (AssertionError, IOError, Exception) as ex:
+                logger.exception(ex)
                 success = False
             else:
                 success = True
@@ -201,7 +197,7 @@ class RamedExporter(QObject):
         self.cancel_requested = True
 
     def cleanup_canceled_export(self, instances=[]):
-        print("cleanup_canceled_export")
+        logger.debug("cleanup_canceled_export")
         # remove every instance's individual folder
         for instance_dict in instances:
             instance = RamedInstance(instance_dict)

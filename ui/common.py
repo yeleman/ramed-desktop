@@ -1,9 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
-
-from __future__ import (
-    unicode_literals, absolute_import, division, print_function)
 
 from PyQt4.QtCore import Qt, QDate
 from PyQt4.QtGui import (QMainWindow, QWidget, QLabel, QPushButton,
@@ -55,11 +52,12 @@ class CWidget(QWidget):
         pass
 
     def change_main_context(self, context_widget, *args, **kwargs):
-        # print("change_main_context")
-        return self.parentWidget().change_context(context_widget, *args, **kwargs)
+        return self.parentWidget().change_context(
+            context_widget, *args, **kwargs)
 
     def open_dialog(self, dialog, modal=False, *args, **kwargs):
-        return self.parentWidget().open_dialog(dialog, modal=modal, *args, **kwargs)
+        return self.parentWidget().open_dialog(
+            dialog, modal=modal, *args, **kwargs)
 
 
 class FormatDate(QDateTimeEdit):
