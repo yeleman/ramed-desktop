@@ -7,7 +7,8 @@ from __future__ import (
 
 import os
 
-from PyQt4.QtGui import (QVBoxLayout, QGridLayout, QLabel, QPixmap)
+from PyQt4.QtGui import (QVBoxLayout, QGridLayout, QLabel, QPixmap,
+                         QSizePolicy)
 from PyQt4.QtCore import Qt
 
 from ui.common import (CWidget, Button, DeletedBtn, FormLabel)
@@ -45,6 +46,12 @@ class ConfirmationViewWidget(CWidget):
                     from_date=from_date, to_date=to_date,
                     nb_instances_successful=nb_instances_successful,
                     nb_medias_successful=nb_medias_successful))
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.msgLabel.sizePolicy().hasHeightForWidth())
+        self.msgLabel.setSizePolicy(sizePolicy)
 
         self.newExportBtn = Button("Nouvel export")
         # self.newExportBtn.setEnabled(False)
