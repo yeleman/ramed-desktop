@@ -31,3 +31,4 @@ class Constants(object):
     NAME_ORGA = "RAMED"
     AGGREGATE_URL = "http://192.168.0.10"
     DEFAULT_FOLDER_NAME = "Données Collecte"
+    ODK_TIMEOUT = 1

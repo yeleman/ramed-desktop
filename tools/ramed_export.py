@@ -20,7 +20,6 @@ from tools.ramed_form_pdf_export import gen_pdf_export
 from tools.ramed_instance import RamedInstance
 from static import Constants
 
-TIMEOUT = 1
 logger = logging.getLogger(__name__)
 
 
@@ -37,7 +36,7 @@ class RamedExporter(QObject):
     export_started = pyqtSignal(name='exportStarted')
 
     # succeeded, index, total
-    instance_completed = pyqtSignal(bool, int, int, name='instanceCompleted')#
+    instance_completed = pyqtSignal(bool, int, int, name='instanceCompleted')
 
     # ident-string, index
     exporting_instance = pyqtSignal(str, int, name='exportingInstance')
@@ -77,7 +76,8 @@ class RamedExporter(QObject):
     def check_aggregate_presence(self):
         self.check_started.emit()
         try:
-            req = requests.get(Constants.AGGREGATE_URL, timeout=TIMEOUT)
+            req = requests.get(Constants.AGGREGATE_URL,
+                               timeout=Constants.ODK_TIMEOUT)
             assert req.status_code in (200, 201, 301)
             success = True
             error_message = ""
@@ -165,7 +165,7 @@ class RamedExporter(QObject):
                                            fname=media.get('filename'))
             fpath = os.path.join(output_dir, fname)
             try:
-                req = requests.get(url, timeout=TIMEOUT)
+                req = requests.get(url, timeout=Constants.ODK_TIMEOUT)
                 assert req.status_code == 200
                 with open(fpath, 'wb') as f:
                     f.write(req.content)
