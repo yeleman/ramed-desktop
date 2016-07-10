@@ -47,8 +47,8 @@ class ConfirmationViewWidget(CWidget):
                     nb_medias_successful=nb_medias_successful))
 
         self.newExportBtn = Button("Nouvel export")
-        self.newExportBtn.setEnabled(False)
-        self.newExportBtn.clicked.connect(self.new_export)
+        # self.newExportBtn.setEnabled(False)
+        self.newExportBtn.clicked.connect(self.parentWidget().reset)
 
         self.cancelBtn = Button("Quiter")
         self.cancelBtn.clicked.connect(self.parentWidget().close)
@@ -65,6 +65,3 @@ class ConfirmationViewWidget(CWidget):
         vBox = QVBoxLayout()
         vBox.addLayout(gridBox)
         self.setLayout(vBox)
-
-    def new_export(self):
-        print("III")

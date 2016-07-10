@@ -20,11 +20,15 @@ class MainWindow(CMainWindow):
 
     def __init__(self, width=None, height=None):
         CMainWindow.__init__(self)
+        self.requested_width = width
+        self.requested_height = height
         self.setWindowTitle(Constants.APP_TITLE)
-        self.resize(width, height)
         self.setWindowIcon(QIcon.fromTheme(
             '', QIcon(u"{}".format(Constants.APP_LOGO))))
+        self.reset()
 
+    def reset(self):
+        self.resize(self.requested_width, self.requested_height)
         self.statusbar = GStatusBar(self)
         self.setStatusBar(self.statusbar)
 
