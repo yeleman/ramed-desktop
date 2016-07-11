@@ -68,6 +68,7 @@ Section "un.install"
 	delete $INSTDIR\*.zip
 	delete $INSTDIR\*.pdf
 	delete $INSTDIR\*.pyd
+	delete $INSTDIR\*.log
 
 	RMDir /r $INSTDIR\build
 	RMDir /r $INSTDIR\${MEDIA}

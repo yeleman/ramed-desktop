@@ -6,8 +6,8 @@ import sys
 
 from PyQt4.QtGui import QApplication
 
-from app_logging import logger
-from ui.mainwindow import MainWindow
+from ramed.app_logging import logger
+from ramed.ui.mainwindow import MainWindow
 
 app = QApplication(sys.argv)
 

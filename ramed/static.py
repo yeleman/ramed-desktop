@@ -10,7 +10,9 @@ import logging
 
 IS_FROZEN = hasattr(sys, 'frozen')
 WORKING_DIR = os.path.dirname(os.path.abspath(sys.executable
-                              if IS_FROZEN else __file__))
+                              if IS_FROZEN
+                              else os.path.dirname(__file__)))
+print(WORKING_DIR)
 
 try:
     with open(os.path.join(WORKING_DIR, 'ramed.config'),

@@ -5,7 +5,7 @@
 import subprocess
 import os
 
-from static import Constants
+from ramed.static import Constants
 
 
 def launch_without_console(command, args):

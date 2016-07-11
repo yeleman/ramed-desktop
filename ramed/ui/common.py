@@ -5,7 +5,7 @@
 from PyQt4.QtCore import Qt, QDate
 from PyQt4.QtGui import (QWidget, QLabel, QPushButton, QDateTimeEdit)
 
-from static import Constants
+from ramed.static import Constants
 
 
 class BaseWidget(QWidget):

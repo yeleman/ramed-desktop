@@ -10,11 +10,11 @@ from PyQt4.QtGui import (QVBoxLayout, QProgressBar, QDialog,
                          QHBoxLayout)
 from PyQt4.QtCore import QDate, pyqtSlot
 
-from static import Constants
-from ui.common import (BaseWidget, DateTimeEdit, Label,
-                       CancelPushButton, PushButton)
-from ui.missing_odk import MissingODKConfirmationWidget
-from app_logging import logger
+from ramed.static import Constants
+from ramed.ui.common import (BaseWidget, DateTimeEdit,
+                             Label, CancelPushButton, PushButton)
+from ramed.ui.missing_odk import MissingODKConfirmationWidget
+from ramed.app_logging import logger
 
 
 class HomeViewWidget(BaseWidget):
@@ -132,8 +132,10 @@ class HomeViewWidget(BaseWidget):
 
         self.json_fpath = None
 
-    def guess_destination(self, root=None):
-        start_folder = root or os.path.join(os.path.expanduser("~"), 'Desktop')
+    def guess_destination(self, root_only=False):
+        start_folder = os.path.join(os.path.expanduser("~"), 'Desktop')
+        if root_only:
+            return start_folder
         return os.path.join(start_folder, Constants.DEFAULT_FOLDER_NAME)
 
     def guess_dates(self):
@@ -151,7 +153,7 @@ class HomeViewWidget(BaseWidget):
         self.start_button.setEnabled(False)
         fpath = QFileDialog.getOpenFileName(
             self, "Choisir le fichier d'export JSON",
-            self.json_fpath or self.guess_destination(),
+            self.json_fpath or self.guess_destination(root_only=True),
             "Fichiers JSON (*.json)")
         self.json_fpath = os.path.abspath(fpath) if fpath else self.json_fpath
 

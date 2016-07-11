@@ -9,9 +9,9 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from path import Path
 
-from app_logging import logger
-from tools.ramed_instance import RamedInstance
-from tools import create_shortcut
+from ramed.app_logging import logger
+from ramed.tools.ramed_instance import RamedInstance
+from ramed.tools import create_shortcut
 
 BLANK = "n/c"
 

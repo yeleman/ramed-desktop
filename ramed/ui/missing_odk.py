@@ -5,8 +5,8 @@
 from PyQt4.QtGui import (QVBoxLayout, QGridLayout, QPixmap,
                          QDialog, QLabel, QIcon)
 
-from static import Constants
-from ui.common import (BaseWidget, PushButton, Label)
+from ramed.static import Constants
+from ramed.ui.common import (BaseWidget, PushButton, Label)
 
 
 class MissingODKConfirmationWidget(QDialog, BaseWidget):

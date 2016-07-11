@@ -5,8 +5,8 @@
 from PyQt4.QtGui import (QVBoxLayout, QGridLayout, QLabel, QPixmap,
                          QSizePolicy)
 
-from static import Constants
-from ui.common import (BaseWidget, PushButton, Label)
+from ramed.static import Constants
+from ramed.ui.common import (BaseWidget, PushButton, Label)
 
 
 class ConfirmationWidget(BaseWidget):
@@ -41,7 +41,7 @@ class ConfirmationWidget(BaseWidget):
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(
-            message_label.size_policy().hasHeightForWidth())
+            message_label.sizePolicy().hasHeightForWidth())
         message_label.setSizePolicy(size_policy)
 
         reset_button = PushButton("Nouvel export")

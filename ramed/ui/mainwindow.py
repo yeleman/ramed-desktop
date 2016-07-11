@@ -5,12 +5,12 @@
 from PyQt4.QtCore import Qt, pyqtSlot, QThread
 from PyQt4.QtGui import QMainWindow, QIcon
 
-from app_logging import logger
-from static import Constants
-from tools.ramed_export import RamedExporter
-from ui.statusbar import StatusBar
-from ui.home import HomeViewWidget
-from ui.confirmation import ConfirmationWidget
+from ramed.app_logging import logger
+from ramed.static import Constants
+from ramed.tools.ramed_export import RamedExporter
+from ramed.ui.statusbar import StatusBar
+from ramed.ui.home import HomeViewWidget
+from ramed.ui.confirmation import ConfirmationWidget
 
 
 class MainWindow(QMainWindow):

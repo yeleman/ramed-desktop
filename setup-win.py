@@ -6,7 +6,7 @@
 import py2exe
 from distutils.core import setup
 
-from static import Constants
+from ramed.static import Constants
 
 RT_MANIFEST = 24
 
@@ -17,15 +17,15 @@ manifest_template = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   <assemblyIdentity
     version="5.0.0.0"
     processorArchitecture="*"
-    name="%(prog)s"
+    name="{prog}"
     type="win32"
   />
-  <description>%(prog)s</description>
+  <description>{prog}</description>
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
     <security>
       <requestedPrivileges>
         <requestedExecutionLevel
-            level="%(level)s"
+            level="{level}"
             uiAccess="false">
         </requestedExecutionLevel>
       </requestedPrivileges>
@@ -68,7 +68,7 @@ py2exe_options = {
 }
 
 # Some options can be overridden by command line options...
-setup(name=Constants.APP_NAME,
+setup(name="RAMED",
       # console based executables
       console=[],
       # windows subsystem executables (no console)

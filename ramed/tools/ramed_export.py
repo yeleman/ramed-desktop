@@ -13,10 +13,12 @@ import datetime
 from PyQt4.QtCore import QObject, pyqtSignal
 from path import Path
 
-from app_logging import logger
-from static import Constants
-from tools.ramed_instance import RamedInstance
-from tools.ramed_form_pdf_export import gen_pdf_export
+from ramed.app_logging import logger
+from ramed.static import Constants
+from ramed.tools.ramed_instance import RamedInstance
+from ramed.tools.ramed_form_pdf_export import gen_pdf_export
+
+requests.packages.urllib3.disable_warnings()
 
 
 class RamedExporter(QObject):
@@ -97,7 +99,7 @@ class RamedExporter(QObject):
             assert req.status_code in (200, 201, 301)
             success = True
             error_message = ""
-        except Exception as e:
+        except (requests.exceptions.RequestException, Exception) as e:
             error_message = repr(e)
             success = False
         finally:
@@ -186,8 +188,10 @@ class RamedExporter(QObject):
                 assert req.status_code == 200
                 with open(fpath, 'wb') as f:
                     f.write(req.content)
-            except (AssertionError, IOError, Exception) as ex:
-                logger.exception(ex)
+            except (AssertionError, IOError, Exception,
+                    requests.exceptions.RequestException, Exception) as ex:
+                logger.debug(repr(ex))
+                # logger.exception(ex)
                 success = False
             else:
                 success = True
