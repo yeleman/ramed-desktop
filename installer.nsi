@@ -2,111 +2,98 @@
 ; 26 06 2015: Fadiga Ibrahima
 
 ; -------------------------------
-; Start
+; variables
 
-  !define MUI_PRODUCT "RAMED Desktop"
-  !define MUI_FILE "ramed"
-  !define MUI_VERSION "1.1"
-  !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
-  !define MEDIA "media"
-  !define IMAGES "img"
-  ;CRCCheck On
+!define MUI_PRODUCT "RAMED Desktop"
+!define MUI_FILE "ramed"
+!define MUI_VERSION "1.1"
+!define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
+!define ICON "logo.ico"
+!define MEDIA "media"
+!define IMAGES "img"
+;CRCCheck On
+;SetCompressor lzma
 
-  !include "${NSISDIR}\Contrib\Modern UI\System.nsh"
+Name "${MUI_PRODUCT}"
+OutFile "Install ${MUI_PRODUCT} ${MUI_VERSION}.exe"
 
-;---------------------------------
-;General
-  OutFile "Install-${MUI_PRODUCT} ${MUI_VERSION}.exe"
-  ;ShowInstDetails "nevershow"
-  ;ShowUninstDetails "nevershow"
-  ;SetCompressor off
+InstallDir "$PROGRAMFILES\${MUI_PRODUCT}"
+!include "MUI2.nsh"
+!include "LangFile.nsh"
 
-  !define MUI_ICON "logo.ico"
-  !define MUI_UNICON "logo.ico"
-  !define MUI_SPECIALBITMAP "Bitmap.bmp"
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_LANGUAGE "French"
 
-;--------------------------------
-;Folder selection page
-  InstallDir "C:\${MUI_PRODUCT}"
 
-;--------------------------------
-;Data
-  ;LicenseData "README.txt"
-
-;--------------------------------
-;Installer Sections
-;Section "install" Installation info
 Section "install"
+	SetOutPath "$INSTDIR"
 
-;Add files
-  SetOutPath "$INSTDIR"
+	; List of files/folders to copy
+	File /r dist\*.*
+	File /r Shortcut.exe
+	File /r ramed.config
+	; File ..\ressources\*.dll
+	File /r ${IMAGES}
 
-  ; List of files/folders to copy
-  File /r dist\*.*
-  File /r Shortcut.exe
-  File /r ramed.config
-  ; File ..\ressources\*.dll
-  File /r ${IMAGES}
+	;create desktop shortcut
+	CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" parameters "$INSTDIR\${MEDIA}\${IMAGES}\${ICON}"
 
-;create desktop shortcut
-  CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" parameters "$INSTDIR\${MEDIA}\${IMAGES}\${MUI_ICON}"
+	;create start-menu items
+	CreateDirectory "$SMPROGRAMS\${MUI_PRODUCT}"
+	CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\${MEDIA}\${IMAGES}\${ICON}" 0
+	CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" "" "$INSTDIR\${MEDIA}\${IMAGES}\${ICON}" 0
 
-;create start-menu items
-  CreateDirectory "$SMPROGRAMS\${MUI_PRODUCT}"
-  CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\${MEDIA}\${IMAGES}\${MUI_ICON}" 0
-  CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" "" "$INSTDIR\${MEDIA}\${IMAGES}\${MUI_ICON}" 0
+	;write uninstall information to the registry
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayName" "${MUI_PRODUCT} (remove only)"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "UninstallString" "$INSTDIR\Uninstall.exe"
 
-;write uninstall information to the registry
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayName" "${MUI_PRODUCT} (remove only)"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "UninstallString" "$INSTDIR\Uninstall.exe"
-
-  WriteUninstaller "$INSTDIR\Uninstall.exe"
+	WriteUninstaller "$INSTDIR\Uninstall.exe"
 
 SectionEnd
 
 
 ;--------------------------------
 ;Uninstaller Section
-Section "Uninstall"
+Section "un.install"
 
-;Delete Files
-;RMDir /r "$INSTDIR\*.*"
+	;Delete Files
+	;RMDir /r "$INSTDIR\*.*"
 
-;Remove the installation directory
-;  RMDir "$INSTDIR"
+	;R emove the installation directory
+	delete $INSTDIR\*.exe
+	delete $INSTDIR\*.config
+	delete $INSTDIR\*.dll
+	delete $INSTDIR\*.lib
+	delete $INSTDIR\*.zip
+	delete $INSTDIR\*.pdf
+	delete $INSTDIR\*.pyd
 
-# now delete installed file
-delete $INSTDIR\*.exe
-delete $INSTDIR\*.dll
-delete $INSTDIR\*.lib
-delete $INSTDIR\*.zip
-delete $INSTDIR\*.pdf
-delete $INSTDIR\*.pyd
+	RMDir /r $INSTDIR\build
+	RMDir /r $INSTDIR\${MEDIA}
+	RMDir /r $INSTDIR\dist
+	RMDir /r $INSTDIR\tcl
+	RmDir "$INSTDIR"
 
-RMDir /r $INSTDIR\build
-RMDir /r $INSTDIR\${MEDIA}
-RMDir /r $INSTDIR\dist
-RMDir /r $INSTDIR\tcl
+	;Delete Start Menu Shortcuts
+	Delete "$DESKTOP\${MUI_PRODUCT}.lnk"
+	Delete "$SMPROGRAMS\${MUI_PRODUCT}\*.*"
+	RmDir  "$SMPROGRAMS\${MUI_PRODUCT}"
 
-;Delete Start Menu Shortcuts
-  Delete "$DESKTOP\${MUI_PRODUCT}.lnk"
-  Delete "$SMPROGRAMS\${MUI_PRODUCT}\*.*"
-  RmDir  "$SMPROGRAMS\${MUI_PRODUCT}"
-
-;Delete Uninstaller And Unistall Registry Entries
-DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\${MUI_PRODUCT}"
-DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}"
+	;Delete Uninstaller And Unistall Registry Entries
+	DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\${MUI_PRODUCT}"
+	DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}"
 
 SectionEnd
 
 ;--------------------------------
 Function .onInstSuccess
-   SetOutPath $INSTDIR
-   ExecShell "" '"$INSTDIR\${MUI_FILE}"'
+	SetOutPath $INSTDIR
+	ExecShell "" '"$INSTDIR\${MUI_FILE}"'
 FunctionEnd
 
 Function un.onUninstSuccess
-  ; MessageBox MB_OK "You have successfully uninstalled ${MUI_PRODUCT}."
+	; MessageBox MB_OK "You have successfully uninstalled ${MUI_PRODUCT}."
 FunctionEnd
 
 ;eof
