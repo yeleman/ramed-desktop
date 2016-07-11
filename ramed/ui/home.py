@@ -108,7 +108,7 @@ class HomeWidget(BaseWidget):
         self.period_groupbox.setLayout(layout)
 
         # start button
-        self.start_button = PushButton("Lancer")
+        self.start_button = PushButton("Démarrer")
         self.start_button.setEnabled(False)
         self.start_button.setDefault(True)
         self.start_button.clicked.connect(self.export_requested)
@@ -225,14 +225,15 @@ class HomeWidget(BaseWidget):
         logger.debug("exporting_instance")
         self.update_progress_label(index)
 
-    @pyqtSlot(bool, int, int)
-    def instance_completed(self, succeeded, index, total):
+    @pyqtSlot(bool, int)
+    def instance_completed(self, succeeded, index):
         logger.debug("instance_completed")
-        pc = index * 100 // total
+        pc = index * 100 // self.nb_instances
         self.progressbar.setValue(pc)
 
-    @pyqtSlot(int, int)
-    def export_ended(self, nb_instances_successful, nb_instances_failed):
+    @pyqtSlot(int, int, int, int)
+    def export_ended(self, nb_instances_successful, nb_instances_failed,
+                     nb_medias_successful, nb_medias_failed):
         self.cancel_button.setEnabled(False)
         self.start_button.setEnabled(True)
 

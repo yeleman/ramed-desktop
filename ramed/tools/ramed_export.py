@@ -34,13 +34,16 @@ class RamedExporter(QObject):
     export_started = pyqtSignal(name='exportStarted')
 
     # succeeded, index, total
-    instance_completed = pyqtSignal(bool, int, int, name='instanceCompleted')
+    instance_completed = pyqtSignal(bool, int, name='instanceCompleted')
 
     # ident-string, index
     exporting_instance = pyqtSignal(str, int, name='exportingInstance')
 
     # number of successful exports, number of errors
-    export_ended = pyqtSignal(int, int, name='exportEnded')
+    # export_ended = pyqtSignal(int, int, name='exportEnded')
+    # nb exports success, nb exports failed,
+    # nb medias success, nb medias failed
+    export_ended = pyqtSignal(int, int, int, int, name='exportEnded')
 
     export_canceled = pyqtSignal(name='exportCanceled')
 
@@ -137,34 +140,73 @@ class RamedExporter(QObject):
         self.export_started.emit()
         self.is_running = True
         exported_instances = []
-        counter = 1
+        nb_instances_successful = 0
+        nb_instances_failed = 0
+        nb_medias_successful = 0
+        nb_medias_failed = 0
+        counter = 0
 
         with open(self.fname, encoding="UTF-8", mode='r') as f:
             for instance_dict in filter(self.submission_filter,
                                         ijson.items(f, 'item')):
                 if self.cancel_requested:
                     break
-                instance = RamedInstance(instance_dict)
-                self.exporting_instance.emit(instance.ident, counter)
-                self.export_single_instance(instance)
-                if self.cancel_requested:
-                    break
-                self.export_instance_medias(instance)
-                exported_instances.append(instance_dict)
-                if self.cancel_requested:
-                    break
-                self.instance_completed.emit(True, counter, self.nb_instances)
+
+                # track progression over all
                 counter += 1
+
+                try:
+                    instance = RamedInstance(instance_dict)
+                except:
+                    # unable to parse instance. outch
+                    nb_instances_failed += 1
+                    continue
+
+                self.exporting_instance.emit(instance.ident, counter)
+                try:
+                    self.export_single_instance(instance)
+                except:
+                    nb_instances_failed += 1
+                    # don't fetch medias for failed exports
+                    self.instance_completed.emit(True, counter)
+                    continue
+                else:
+                    nb_instances_successful += 1
+
+                if self.cancel_requested:
+                    break
+
+                try:
+                    medias = self.export_instance_medias(instance)
+                except:
+                    # unable to guess how much succeeded/failed
+                    medias = {}
+                finally:
+                    nb_medias_successful += len(
+                        [1 for m in medias.values()
+                         if m.get('success') or False])
+                    nb_medias_failed += len(medias) - nb_medias_successful
+
+                exported_instances.append(instance_dict)
+
+                if self.cancel_requested:
+                    break
+
+                self.instance_completed.emit(True, counter)
+
         if self.cancel_requested:
             self.cleanup_canceled_export(exported_instances)
             self.export_canceled.emit()
             return
+
         # copy JSON file to destination
         fpath = os.path.join(self.destination_folder, "odk_data.json")
         with open(fpath, encoding='UTF-8', mode='w') as f:
             json.dump(exported_instances, f)
+
         self.is_running = False
-        self.export_ended.emit(counter - 1, 0)
+        self.export_ended.emit(nb_instances_successful, nb_instances_failed,
+                               nb_medias_successful, nb_medias_failed)
 
     def export_single_instance(self, instance):
         fname, fpath = gen_pdf_export(self.destination_folder, instance)

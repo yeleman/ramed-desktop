@@ -25,23 +25,22 @@ class ConfirmationWidget(BaseWidget):
         icon_label.setPixmap(QPixmap(Constants.intpath(
             [Constants.IMAGES_FOLDER, 'success.png'])))
 
+        date_fmt = "%d-%m-%Y"
         nb_submissions_total = nb_instances_successful + nb_instances_failed
         message_label = Label(
-            "<p>L'ensemble des données de la collecte "
-            "({nb_submissions_total} enregistrements entre {from_date} "
-            "et {to_date})<br /> ont été exportées avec succes.</p>"
+            "<p>L'ensemble des données de la collecte ;<br />"
+            "({nb_submissions_total}) enregistrements entre le {from_date} "
+            "et le {to_date} ;<br />"
+            "ont été exportées avec succes.</p>"
             "<h6>Nombre enregistrements : {nb_instances_successful} </h6>"
             "<h6> Nombre de médias : {nb_medias_successful} </h6>"
             .format(nb_submissions_total=nb_submissions_total,
-                    from_date=from_date, to_date=to_date,
+                    from_date=from_date.strftime(date_fmt),
+                    to_date=to_date.strftime(date_fmt),
                     nb_instances_successful=nb_instances_successful,
                     nb_medias_successful=nb_medias_successful))
 
         size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        size_policy.setHorizontalStretch(0)
-        size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(
-            message_label.sizePolicy().hasHeightForWidth())
         message_label.setSizePolicy(size_policy)
 
         reset_button = PushButton("Nouvel export")

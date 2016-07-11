@@ -75,18 +75,6 @@ class MainWindow(QMainWindow):
         self.wc = self.width()
         self.hc = self.height()
 
-    def change_context(self, context_widget, *args, **kwargs):
-        # instanciate context
-        self.view_widget = context_widget(parent=self, *args, **kwargs)
-        # attach context to window
-        self.setCentralWidget(self.view_widget)
-
-    def open_dialog(self, dialog, modal=False, opacity=0.98, *args, **kwargs):
-        d = dialog(parent=self, *args, **kwargs)
-        d.setModal(modal)
-        d.setWindowOpacity(opacity)
-        d.exec_()
-
     @pyqtSlot()
     def check_started(self):
         logger.debug("check started")
@@ -119,21 +107,24 @@ class MainWindow(QMainWindow):
         logger.debug("exporting_instance")
         self.statusbar.showMessage(ident)
 
-    @pyqtSlot(bool, int, int)
-    def instance_completed(self, succeeded, index, total):
+    @pyqtSlot(bool, int)
+    def instance_completed(self, succeeded, index):
         logger.debug("instance_completed")
 
-    @pyqtSlot(int, int)
-    def export_ended(self, nb_instances_successful, nb_instances_failed):
+    @pyqtSlot(int, int, int, int)
+    def export_ended(self,
+                     nb_instances_successful, nb_instances_failed,
+                     nb_medias_successful, nb_medias_failed):
         logger.debug("export_ended: {}, {}"
                      .format(nb_instances_successful, nb_instances_failed))
         self.statusbar.reset()
         self.change_context(ConfirmationWidget,
                             nb_instances_successful=nb_instances_successful,
                             nb_instances_failed=nb_instances_failed,
-                            nb_medias_successful="?",
-                            nb_medias_failed="?",
-                            from_date="?", to_date="?")
+                            nb_medias_successful=nb_medias_successful,
+                            nb_medias_failed=nb_medias_failed,
+                            from_date=self.view_widget.from_date,
+                            to_date=self.view_widget.to_date)
 
     @pyqtSlot()
     def export_canceled(self):
