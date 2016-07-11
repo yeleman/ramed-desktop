@@ -7,7 +7,6 @@ import datetime
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.pagesizes import letter
 from path import Path
 
 from app_logging import logger
@@ -19,9 +18,10 @@ BLANK = "n/c"
 
 def gen_pdf_export(export_folder, instance):
 
-    width, height = letter
+    width, height = A4
     output_folder = os.path.join(export_folder, instance.folder_name)
     Path(output_folder).makedirs_p()
+
     fname = "{name}.pdf".format(name=instance.name)
     fpath = os.path.join(output_folder, fname)
 
@@ -79,8 +79,8 @@ def gen_pdf_export(export_folder, instance):
         return text == 'oui', text
 
     def get_nom(data, p='', s=''):
-        nom = RamedInstance.clean_nom(data.get('{p}nom{s}'.format(p=p, s=s)))
-        prenoms = RamedInstance.clean_prenoms(data.get('{p}prenoms{s}'
+        nom = RamedInstance.clean_lastname(data.get('{p}nom{s}'.format(p=p, s=s)))
+        prenoms = RamedInstance.clean_firstnames(data.get('{p}prenoms{s}'
                                                        .format(p=p, s=s)))
         name = RamedInstance.clean_name(nom, prenoms)
         return nom, prenoms, name

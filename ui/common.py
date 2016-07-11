@@ -3,35 +3,9 @@
 # vim: ai ts=4 sts=4 et sw=4 nu
 
 from PyQt4.QtCore import Qt, QDate
-from PyQt4.QtGui import (QMainWindow, QWidget, QLabel, QPushButton,
-                         QIcon, QDateTimeEdit)
+from PyQt4.QtGui import (QWidget, QLabel, QPushButton, QDateTimeEdit)
 
 from static import Constants
-
-
-class BaseMainWindow(QMainWindow):
-
-    def __init__(self, parent=0, *args, **kwargs):
-        super(QMainWindow, self).__init__()
-        self.wc = self.width()
-        self.hc = self.height()
-        self.resize(self.wc, self.hc)
-
-        self.setWindowTitle(Constants.NAME_ORGA)
-        self.setWindowIcon(QIcon(Constants.intpath(Constants.APP_LOGO)))
-        self.setWindowFlags(Qt.WindowMinimizeButtonHint)
-
-    def change_context(self, context_widget, *args, **kwargs):
-        # instanciate context
-        self.view_widget = context_widget(parent=self, *args, **kwargs)
-        # attach context to window
-        self.setCentralWidget(self.view_widget)
-
-    def open_dialog(self, dialog, modal=False, opacity=0.98, *args, **kwargs):
-        d = dialog(parent=self, *args, **kwargs)
-        d.setModal(modal)
-        d.setWindowOpacity(opacity)
-        d.exec_()
 
 
 class BaseWidget(QWidget):
@@ -68,8 +42,6 @@ class PushButton(QPushButton):
 
     def __init__(self, *args, **kwargs):
         super(PushButton, self).__init__(*args, **kwargs)
-        # self.setAutoDefault(True)
-        # self.setIcon(QIcon.fromTheme('', QIcon('')))
         self.setCursor(Qt.PointingHandCursor)
 
 

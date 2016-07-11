@@ -2,8 +2,6 @@
 # -*- encoding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 
-import os
-
 from PyQt4.QtGui import (QVBoxLayout, QGridLayout, QLabel, QPixmap,
                          QSizePolicy)
 
@@ -21,12 +19,14 @@ class ConfirmationWidget(BaseWidget):
                  from_date, to_date, *args, **kwargs):
         super(ConfirmationWidget, self).__init__(parent=parent)
 
-        self.logoField = QLabel()
-        self.logoField.setPixmap(
-            QPixmap(Constants.intpath([Constants.IMG_MEDIA, 'success.png'])))
+        title_label = Label(
+            "<h2><font color='green'>Félicitations !</font></h2>")
+        icon_label = QLabel()
+        icon_label.setPixmap(QPixmap(Constants.intpath(
+            [Constants.IMAGES_FOLDER, 'success.png'])))
 
         nb_submissions_total = nb_instances_successful + nb_instances_failed
-        self.msgLabel = Label(
+        message_label = Label(
             "<p>L'ensemble des données de la collecte "
             "({nb_submissions_total} enregistrements entre {from_date} "
             "et {to_date})<br /> ont été exportées avec succes.</p>"
@@ -37,26 +37,25 @@ class ConfirmationWidget(BaseWidget):
                     nb_instances_successful=nb_instances_successful,
                     nb_medias_successful=nb_medias_successful))
 
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.msgLabel.sizePolicy().hasHeightForWidth())
-        self.msgLabel.setSizePolicy(sizePolicy)
+        size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(
+            message_label.size_policy().hasHeightForWidth())
+        message_label.setSizePolicy(size_policy)
 
-        self.newExportBtn = PushButton("Nouvel export")
-        self.newExportBtn.clicked.connect(self.parentWidget().reset)
+        reset_button = PushButton("Nouvel export")
+        reset_button.clicked.connect(self.parentWidget().reset)
 
-        self.cancelBtn = PushButton("Quiter")
-        self.cancelBtn.clicked.connect(self.parentWidget().close)
+        quit_button = PushButton("Quitter")
+        quit_button.clicked.connect(self.parentWidget().close)
 
         gridBox = QGridLayout()
-        gridBox.addWidget(self.logoField, 0, 1)
-        gridBox.addWidget(
-            Label("<h2><font color='green'>Félicitations !</font></h2>"), 0, 2)
-        gridBox.addWidget(self.msgLabel, 1, 1, 3, 2)
-        gridBox.addWidget(self.newExportBtn, 4, 1)
-        gridBox.addWidget(self.cancelBtn, 4, 2)
+        gridBox.addWidget(icon_label, 0, 1)
+        gridBox.addWidget(title_label, 0, 2)
+        gridBox.addWidget(message_label, 1, 1, 3, 2)
+        gridBox.addWidget(reset_button, 4, 1)
+        gridBox.addWidget(quit_button, 4, 2)
         gridBox.setRowStretch(1, 3)
 
         vBox = QVBoxLayout()

@@ -33,24 +33,28 @@ class Constants(object):
 
     SYSTEM = platform.system()
     IS_FROZEN = IS_FROZEN
+
     WORKING_DIR = WORKING_DIR
-    NAME_MAIN = "ramed.py"
+    MAIN_SCRIPT = "ramed.py"
+
     APP_NAME = "RAMED Desktop"
     APP_TITLE = "Export des fichiers de collecte RAMED"
-    APP_VERSION = u"1.0"
-    APP_DATE = u"07/2016"
-    IMG_MEDIA = os.path.join(WORKING_DIR, "media", "img")
-    APP_LOGO = os.path.join(IMG_MEDIA, "logo.png")
-    APP_LOGO_ICO = os.path.join(IMG_MEDIA, "logo.ico")
+
+    APP_VERSION = "1.0"
+    APP_DATE = "07/2016"
+
+    IMAGES_FOLDER = os.path.join("media", "img")
+    PNG_ICON = os.path.join(IMAGES_FOLDER, "logo.png")
+    ICO_ICON = os.path.join(IMAGES_FOLDER, "logo.ico")
 
     DATE_DISPLAY_FORMAT = "dd/MM/yyyy"
 
-    AUTOR = u"yɛlɛman s.à.r.l"
-    EMAIL_AUT = u"info@yeleman.com"
-    TEL_AUT = u"(223) 76 33 30 05"
-    ADRESS_AUT = u"Hipprodrome, rue 240 porte 1068\nBPE. 3713 - Bamako, Mali"
-    ORG_AUT = u"© RAMED/UNICEF/YELEMAN"
-    NAME_ORGA = "RAMED"
+    AUTHOR = "yɛlɛman s.à.r.l"
+    AUTHOR_EMAIL = "info@yeleman.com"
+    AUTHOR_PHONE = "(223) 76 33 30 05"
+    AUTHOR_ADDRESS = "Hipprodrome, rue 240 porte 1068\n" \
+                     "BPE. 3713 - Bamako, Mali"
+    AUTHOR_COPY = "© RAMED/UNICEF/YELEMAN"
 
     VERBOSE = CONFIG.get('VERBOSE', False)
     LOG_LEVEL = get_log_level(CONFIG.get('LOG_LEVEL', 'DEBUG'))

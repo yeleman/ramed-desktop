@@ -43,7 +43,7 @@ class RamedExporter(QObject):
     export_canceled = pyqtSignal(name='exportCanceled')
 
     # error message
-    raised_error = pyqtSignal(str, name='ErrorRaised')
+    error_raised = pyqtSignal(str, name='ErrorRaised')
 
     def __init__(self, main_window):
         super(RamedExporter, self).__init__()
@@ -72,10 +72,22 @@ class RamedExporter(QObject):
         self.export_canceled.connect(main_window.view_widget.export_canceled)
         self.export_canceled.connect(main_window.export_canceled)
 
-        self.raised_error.connect(main_window.export_raised_error)
+        self.error_raised.connect(main_window.export_error_raised)
 
     def path_for(self, path):
         return os.path.join(self.destination_folder, path)
+
+    def submission_filter(self, instance_dict):
+        try:
+            instance_id = instance_dict.get('instanceID') or None
+            instance_date = datetime.date(
+                *[int(x) for x in instance_dict.get('date').split('-')[:3]])
+            assert instance_id
+            assert instance_date >= self.from_date
+            assert instance_date <= self.to_date
+            return True
+        except:
+            return False
 
     def check_aggregate_presence(self):
         self.check_started.emit()
@@ -108,9 +120,9 @@ class RamedExporter(QObject):
                 items = ijson.items(f, 'item')
                 nb_instances = len(list(filter(self.submission_filter, items)))
         except IOError:
-            error_message = "Unable to read file"
+            error_message = "Impossible de lire le fichier."
         except ValueError:
-            error_message = "File is not a valid JSON"
+            error_message = "Le fichier n'est pas un fichier JSON valide."
         except Exception as e:
             error_message = repr(e)
         else:
@@ -119,23 +131,12 @@ class RamedExporter(QObject):
             self.nb_instances = nb_instances
             self.parsing_ended.emit(success, nb_instances, error_message)
 
-    def submission_filter(self, instance_dict):
-        try:
-            instance_id = instance_dict.get('instanceID') or None
-            instance_date = datetime.date(
-                *[int(x) for x in instance_dict.get('date').split('-')[:3]])
-            assert instance_id
-            assert instance_date >= self.from_date
-            assert instance_date <= self.to_date
-            return True
-        except:
-            return False
-
     def start(self):
         self.export_started.emit()
         self.is_running = True
-        instances = []
+        exported_instances = []
         counter = 1
+
         with open(self.fname, encoding="UTF-8", mode='r') as f:
             for instance_dict in filter(self.submission_filter,
                                         ijson.items(f, 'item')):
@@ -146,27 +147,27 @@ class RamedExporter(QObject):
                 self.export_single_instance(instance)
                 if self.cancel_requested:
                     break
-                self.export_medias(instance)
-                instances.append(instance_dict)
+                self.export_instance_medias(instance)
+                exported_instances.append(instance_dict)
                 if self.cancel_requested:
                     break
                 self.instance_completed.emit(True, counter, self.nb_instances)
                 counter += 1
         if self.cancel_requested:
-            self.cleanup_canceled_export(instances)
+            self.cleanup_canceled_export(exported_instances)
             self.export_canceled.emit()
             return
         # copy JSON file to destination
         fpath = os.path.join(self.destination_folder, "odk_data.json")
         with open(fpath, encoding='UTF-8', mode='w') as f:
-            json.dump(instances, f)
+            json.dump(exported_instances, f)
         self.is_running = False
         self.export_ended.emit(counter - 1, 0)
 
     def export_single_instance(self, instance):
         fname, fpath = gen_pdf_export(self.destination_folder, instance)
 
-    def export_medias(self, instance):
+    def export_instance_medias(self, instance):
         medias = copy.deepcopy(instance.medias)
 
         output_dir = os.path.join(self.destination_folder,
@@ -198,14 +199,18 @@ class RamedExporter(QObject):
 
     def cleanup_canceled_export(self, instances=[]):
         logger.debug("cleanup_canceled_export")
+
         # remove every instance's individual folder
         for instance_dict in instances:
             instance = RamedInstance(instance_dict)
             Path(self.path_for(instance.folder_name)).rmtree_p()
+
         # remove other static folders and files
         Path(self.path_for("PDF")).rmtree_p()
         Path(self.path_for('odk_data.json')).remove_p()
+
         # try to remove destination folder (if empty)
         Path(self.destination_folder).rmdir_p()
+
         self.cancel_requested = None
         self.is_running = False

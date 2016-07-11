@@ -12,54 +12,53 @@ class RamedInstance(dict):
         self.parse()
 
     @classmethod
-    def clean_prenoms(cls, prenoms):
-        return prenoms.strip().title() if prenoms else None
+    def clean_firstnames(cls, firstnames):
+        return firstnames.strip().title() if firstnames else None
 
     @classmethod
-    def clean_nom(cls, nom):
-        return nom.strip().upper() if nom else None
+    def clean_lastname(cls, lastname):
+        return lastname.strip().upper() if lastname else None
 
     @classmethod
-    def clean_name(cls, nom, prenoms):
-        if prenoms and nom:
-            return "{nom} {prenoms}".format(prenoms=prenoms, nom=nom)
-        elif prenoms:
-            return prenoms
-        return nom
-
-    def parse(self):
-        self._medias = self.get_medias()
+    def clean_name(cls, lastname, firstnames):
+        if firstnames and lastname:
+            return "{lastname} {firstnames}".format(firstnames=firstnames,
+                                                    lastname=lastname)
+        elif firstnames:
+            return firstnames
+        return lastname
 
     @property
-    def prenom(self):
-        return self.clean_prenoms(self.get('prenoms'))
+    def firstnames(self):
+        return self.clean_firstnames(self.get('prenoms'))
 
     @property
-    def nom(self):
-        return self.clean_nom(self.get('nom'))
+    def lastname(self):
+        return self.clean_lastname(self.get('nom'))
 
     @property
     def name(self):
-        if self.prenom and self.nom:
-            return "{nom} {prenom}".format(prenom=self.prenom, nom=self.nom)
-        elif self.prenom:
-            return self.prenom
-        return self.nom
+        if self.firstnames and self.lastname:
+            return "{lastname} {firstnames}".format(
+                firstnames=self.firstnames, lastname=self.lastname)
+        elif self.firstnames:
+            return self.firstnames
+        return self.lastname
 
     @property
-    def uuids(self):
+    def uuid(self):
         return self.get("instanceID")[5:13]
 
     @property
     def ident(self):
-        return "{uuid}: {name}".format(uuid=self.uuids, name=self.name)
+        return "{uuid}: {name}".format(uuid=self.uuid, name=self.name)
 
     @property
     def folder_name(self):
         return "{nom}-{uuid}".format(
             nom=re.sub(r'\[\]/\;,\>\<\&\*\:\%\=\+\@\!\#\^\(\)\|\?',
                        '', self.name),
-            uuid=self.uuids)
+            uuid=self.uuid)
 
     @property
     def region(self):
@@ -78,6 +77,10 @@ class RamedInstance(dict):
         return "/".join([part for part
                          in (self.commune, self.cercle, self.region)
                         if part is not None])
+
+    @property
+    def medias(self):
+        return self._medias
 
     def get_medias(self):
         medias = {}
@@ -106,6 +109,5 @@ class RamedInstance(dict):
         walk_dict(self)
         return medias
 
-    @property
-    def medias(self):
-        return self._medias
+    def parse(self):
+        self._medias = self.get_medias()

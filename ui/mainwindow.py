@@ -2,32 +2,44 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 
-from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import pyqtSlot, QThread
+from PyQt4.QtCore import Qt, pyqtSlot, QThread
+from PyQt4.QtGui import QMainWindow, QIcon
 
 from app_logging import logger
 from static import Constants
 from tools.ramed_export import RamedExporter
-from ui.common import BaseMainWindow
 from ui.statusbar import StatusBar
 from ui.home import HomeViewWidget
 from ui.confirmation import ConfirmationWidget
 
 
-class MainWindow(BaseMainWindow):
+class MainWindow(QMainWindow):
 
     def __init__(self, width=None, height=None):
-        super(BaseMainWindow, self).__init__()
+        super(QMainWindow, self).__init__()
+
         self.requested_width = width
         self.requested_height = height
+        if self.requested_width and self.requested_height:
+            self.resize(self.requested_width, self.requested_height)
         self.setWindowTitle(Constants.APP_TITLE)
-        self.setWindowIcon(QIcon.fromTheme(
-            '', QIcon(u"{}".format(Constants.APP_LOGO))))
+        self.setWindowIcon(QIcon(Constants.intpath(Constants.PNG_ICON)))
+        self.setWindowFlags(Qt.WindowMinimizeButtonHint)
+
         self.reset()
+
+    def change_context(self, context_widget, *args, **kwargs):
+        self.view_widget = context_widget(parent=self, *args, **kwargs)
+        self.setCentralWidget(self.view_widget)
+
+    def open_dialog(self, dialog, modal=False, opacity=0.98, *args, **kwargs):
+        d = dialog(parent=self, *args, **kwargs)
+        d.setModal(modal)
+        d.setWindowOpacity(opacity)
+        d.exec_()
 
     # override
     def closeEvent(self, event):
-        logger.debug("closeEvent")
         if self.exporter.is_running:
             event.ignore()
 
@@ -44,10 +56,8 @@ class MainWindow(BaseMainWindow):
         self.close()
 
     def reset(self):
-        self.resize(self.requested_width, self.requested_height)
         self.statusbar = StatusBar(self)
         self.setStatusBar(self.statusbar)
-
         self.change_context(HomeViewWidget)
 
         # exporter
@@ -87,7 +97,7 @@ class MainWindow(BaseMainWindow):
         if succeeded:
             self.view_widget.start_export()
         else:
-            self.view_widget.display_noaggregate_confirmation()
+            self.view_widget.display_missing_aggregate_confirmation()
 
     @pyqtSlot()
     def parsing_started(self):
@@ -130,5 +140,5 @@ class MainWindow(BaseMainWindow):
         self.statusbar.reset()
 
     @pyqtSlot(str)
-    def export_raised_error(self, error_message):
-        logger.debug("export_raised_error: {}".format(error_message))
+    def export_error_raised(self, error_message):
+        logger.debug("export_error_raised: {}".format(error_message))

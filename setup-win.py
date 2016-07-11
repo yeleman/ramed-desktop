@@ -48,11 +48,11 @@ manifest_template = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 main = {
     'version': "1.1",
-    'script': Constants.NAME_MAIN,  # path of the main script
-    'icon_resources': [(0, Constants.APP_LOGO_ICO)],
+    'script': Constants.MAIN_SCRIPT,  # path of the main script
+    'icon_resources': [(0, Constants.ICO_ICON)],
     'other_resources': [
         (RT_MANIFEST, 1, (manifest_template
-                          .format(prog=Constants.NAME_MAIN,
+                          .format(prog=Constants.MAIN_SCRIPT,
                                   level="asInvoker")).encode("utf-8")),
         ]
     }
@@ -75,5 +75,4 @@ setup(name=Constants.APP_NAME,
       windows=[main],
       # py2exe options
       zipfile=None,
-      options={"py2exe": py2exe_options, },
-      )
+      options={"py2exe": py2exe_options, })
