@@ -3,7 +3,7 @@
 # vim: ai ts=4 sts=4 et sw=4 nu
 
 from PyQt4.QtCore import Qt, pyqtSlot, QThread
-from PyQt4.QtGui import QMainWindow, QIcon
+from PyQt4.QtGui import QMainWindow, QIcon, QMessageBox
 
 from ramed.app_logging import logger
 from ramed.static import Constants
@@ -25,8 +25,28 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(Constants.APP_TITLE)
         self.setWindowIcon(QIcon(Constants.intpath(Constants.PNG_ICON)))
         self.setWindowFlags(Qt.WindowMinimizeButtonHint)
-
         self.reset()
+
+        QMessageBox.information(
+            self,
+            Constants.APP_TITLE,
+            "Cette application vous permet d'exporter les données d'une "
+            "collecte mobile effectuée avec ODK Collect et ODK Aggregate.\n\n"
+            "Commencez par exporter vos données au format JSON depuis "
+            "l'interface web d'ODK Aggregate ({odk_url}) puis utilisez cette "
+            "application pour générer les formulaires d'enquêtes remplis.\n\n"
+            "Ils seront ensuite disponible au format PDF pour impression et "
+            "seront accompagnés de tous les médias (photos) pour transfert "
+            "aux autres département par clé USB.\n\n"
+            "{author} - {email} - {phone}\n{copy} - {date}"
+            .format(author=Constants.AUTHOR,
+                    copy=Constants.AUTHOR_COPY,
+                    date=Constants.APP_DATE,
+                    email=Constants.AUTHOR_EMAIL,
+                    phone=Constants.AUTHOR_PHONE,
+                    odk_url=Constants.AGGREGATE_URL),
+            QMessageBox.Ok,
+            QMessageBox.NoButton)
 
     def change_context(self, context_widget, *args, **kwargs):
         self.view_widget = context_widget(parent=self, *args, **kwargs)

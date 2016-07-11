@@ -43,7 +43,7 @@ class Constants(object):
     APP_TITLE = "Export des fichiers de collecte RAMED"
 
     APP_VERSION = "1.0"
-    APP_DATE = "07/2016"
+    APP_DATE = "juillet 2016"
 
     IMAGES_FOLDER = os.path.join("media", "img")
     PNG_ICON = os.path.join(IMAGES_FOLDER, "logo.png")
@@ -54,8 +54,6 @@ class Constants(object):
     AUTHOR = "yɛlɛman s.à.r.l"
     AUTHOR_EMAIL = "info@yeleman.com"
     AUTHOR_PHONE = "(223) 76 33 30 05"
-    AUTHOR_ADDRESS = "Hipprodrome, rue 240 porte 1068\n" \
-                     "BPE. 3713 - Bamako, Mali"
     AUTHOR_COPY = "© RAMED/UNICEF/YELEMAN"
 
     VERBOSE = CONFIG.get('VERBOSE', False)
