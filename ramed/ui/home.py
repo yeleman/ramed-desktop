@@ -17,10 +17,10 @@ from ramed.ui.missing_odk import MissingODKConfirmationWidget
 from ramed.app_logging import logger
 
 
-class HomeViewWidget(BaseWidget):
+class HomeWidget(BaseWidget):
 
     def __init__(self, parent=0, *args, **kwargs):
-        super(HomeViewWidget, self).__init__(parent=parent, *args, **kwargs)
+        super(HomeWidget, self).__init__(parent=parent, *args, **kwargs)
 
         # inputs
         self._json_fpath = None

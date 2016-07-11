@@ -9,7 +9,7 @@ from ramed.app_logging import logger
 from ramed.static import Constants
 from ramed.tools.ramed_export import RamedExporter
 from ramed.ui.statusbar import StatusBar
-from ramed.ui.home import HomeViewWidget
+from ramed.ui.home import HomeWidget
 from ramed.ui.confirmation import ConfirmationWidget
 
 
@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
     def reset(self):
         self.statusbar = StatusBar(self)
         self.setStatusBar(self.statusbar)
-        self.change_context(HomeViewWidget)
+        self.change_context(HomeWidget)
 
         # exporter
         self.exporter = RamedExporter(main_window=self)
