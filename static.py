@@ -6,8 +6,7 @@ import os
 import sys
 import platform
 import json
-
-from app_logging import logger
+import logging
 
 IS_FROZEN = hasattr(sys, 'frozen')
 WORKING_DIR = os.path.dirname(os.path.abspath(sys.executable
@@ -19,8 +18,15 @@ try:
         CONFIG = json.load(f)
 except Exception as ex:
     if not isinstance(ex, IOError):
-        logger.exception(ex)
+        print(repr(ex))
     CONFIG = {}
+
+
+def get_log_level(value):
+    level = value.upper()
+    if level in ('DEBUG', 'INFO', 'WARNING', 'CRITICAL'):
+        return getattr(logging, level)
+    return logging.DEBUG
 
 
 class Constants(object):
@@ -42,8 +48,11 @@ class Constants(object):
     TEL_AUT = u"(223) 76 33 30 05"
     ADRESS_AUT = u"Hipprodrome, rue 240 porte 1068\nBPE. 3713 - Bamako, Mali"
     ORG_AUT = u"© RAMED/UNICEF/YELEMAN"
-
     NAME_ORGA = "RAMED"
+
+    VERBOSE = CONFIG.get('VERBOSE', False)
+    LOG_LEVEL = get_log_level(CONFIG.get('LOG_LEVEL', 'DEBUG'))
+
     AGGREGATE_URL = CONFIG.get('AGGREGATE_URL', "http://192.168.0.10")
     DEFAULT_FOLDER_NAME = CONFIG.get('DEFAULT_FOLDER_NAME', "Données Collecte")
     ODK_TIMEOUT = CONFIG.get('ODK_TIMEOUT', 1)
