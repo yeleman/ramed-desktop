@@ -13,10 +13,10 @@ import datetime
 from PyQt4.QtCore import QObject, pyqtSignal
 from path import Path
 
-from tools.ramed_form_pdf_export import gen_pdf_export
-from tools.ramed_instance import RamedInstance
-from static import Constants
 from app_logging import logger
+from static import Constants
+from tools.ramed_instance import RamedInstance
+from tools.ramed_form_pdf_export import gen_pdf_export
 
 
 class RamedExporter(QObject):

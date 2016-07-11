@@ -43,6 +43,8 @@ class Constants(object):
     APP_LOGO = os.path.join(IMG_MEDIA, "logo.png")
     APP_LOGO_ICO = os.path.join(IMG_MEDIA, "logo.ico")
 
+    DATE_DISPLAY_FORMAT = "dd/MM/yyyy"
+
     AUTOR = u"yɛlɛman s.à.r.l"
     EMAIL_AUT = u"info@yeleman.com"
     TEL_AUT = u"(223) 76 33 30 05"
@@ -56,3 +58,10 @@ class Constants(object):
     AGGREGATE_URL = CONFIG.get('AGGREGATE_URL', "http://192.168.0.10")
     DEFAULT_FOLDER_NAME = CONFIG.get('DEFAULT_FOLDER_NAME', "Données Collecte")
     ODK_TIMEOUT = CONFIG.get('ODK_TIMEOUT', 1)
+
+    @classmethod
+    def intpath(cls, path):
+        # assume path is either a str path or a list of components
+        if not isinstance(path, str):
+            path = os.path.join(*path)
+        return os.path.join(cls.WORKING_DIR, path)

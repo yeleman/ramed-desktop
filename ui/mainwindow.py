@@ -5,19 +5,19 @@
 from PyQt4.QtGui import QIcon
 from PyQt4.QtCore import pyqtSlot, QThread
 
-from static import Constants
-from ui.common import CMainWindow
-from ui.statusbar import GStatusBar
-from ui.home import HomeViewWidget
-from ui.confirmation import ConfirmationViewWidget
-from tools.ramed_export import RamedExporter
 from app_logging import logger
+from static import Constants
+from tools.ramed_export import RamedExporter
+from ui.common import BaseMainWindow
+from ui.statusbar import StatusBar
+from ui.home import HomeViewWidget
+from ui.confirmation import ConfirmationWidget
 
 
-class MainWindow(CMainWindow):
+class MainWindow(BaseMainWindow):
 
     def __init__(self, width=None, height=None):
-        CMainWindow.__init__(self)
+        super(BaseMainWindow, self).__init__()
         self.requested_width = width
         self.requested_height = height
         self.setWindowTitle(Constants.APP_TITLE)
@@ -45,7 +45,7 @@ class MainWindow(CMainWindow):
 
     def reset(self):
         self.resize(self.requested_width, self.requested_height)
-        self.statusbar = GStatusBar(self)
+        self.statusbar = StatusBar(self)
         self.setStatusBar(self.statusbar)
 
         self.change_context(HomeViewWidget)
@@ -118,7 +118,7 @@ class MainWindow(CMainWindow):
         logger.debug("export_ended: {}, {}"
                      .format(nb_instances_successful, nb_instances_failed))
         self.statusbar.reset()
-        self.change_context(ConfirmationViewWidget,
+        self.change_context(ConfirmationWidget,
                             nb_instances_successful=nb_instances_successful,
                             nb_instances_failed=nb_instances_failed,
                             nb_medias_successful="?",

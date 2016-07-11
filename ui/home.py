@@ -11,12 +11,13 @@ from PyQt4.QtGui import (QVBoxLayout, QProgressBar, QDialog,
 from PyQt4.QtCore import QDate, pyqtSlot
 
 from static import Constants
-from ui.common import (CWidget, FormatDate, FormLabel, CancelButton, Button)
-from ui.dialogue_box import dialogueViewWidget
+from ui.common import (BaseWidget, DateTimeEdit, Label,
+                       CancelPushButton, PushButton)
+from ui.missing_odk import MissingODKConfirmationWidget
 from app_logging import logger
 
 
-class HomeViewWidget(CWidget):
+class HomeViewWidget(BaseWidget):
 
     def __init__(self, parent=0, *args, **kwargs):
         super(HomeViewWidget, self).__init__(parent=parent, *args, **kwargs)
@@ -33,7 +34,7 @@ class HomeViewWidget(CWidget):
         # json file selector
         self.json_groupbox = QGroupBox("Export ODK Aggregate")
         layout = QGridLayout()
-        self.browse_file_btn = Button("", self)
+        self.browse_file_btn = PushButton("", self)
         self.browse_file_btn.clicked.connect(self.json_file_selected)
         layout.addWidget(self.browse_file_btn, 1, 0)
         self.json_groupbox.setLayout(layout)
@@ -41,7 +42,7 @@ class HomeViewWidget(CWidget):
         # destination folder selector
         self.destination_groupbox = QGroupBox("Destination")
         layout = QGridLayout()
-        self.destination_btn = Button(self.destination_folder, self)
+        self.destination_btn = PushButton(self.destination_folder, self)
         self.destination_btn.clicked.connect(self.directory_selected)
         layout.addWidget(self.destination_btn, 1, 0)
         self.destination_groupbox.setLayout(layout)
@@ -50,27 +51,27 @@ class HomeViewWidget(CWidget):
         today = datetime.date.today()
         self.period_groupbox = QGroupBox("Période")
         layout = QGridLayout()
-        self.from_date_selector = FormatDate(QDate(self.from_date))
+        self.from_date_selector = DateTimeEdit(QDate(self.from_date))
         self.from_date_selector.dateChanged.connect(self.from_date_changed)
         self.from_date_selector.setMaximumDate(self.to_date)
-        self.to_date_selector = FormatDate(QDate(self.to_date))
+        self.to_date_selector = DateTimeEdit(QDate(self.to_date))
         self.to_date_selector.dateChanged.connect(self.to_date_changed)
         self.to_date_selector.setMinimumDate(self.from_date)
         self.to_date_selector.setMaximumDate(today)
-        layout.addWidget(FormLabel("Du"), 2, 0)
+        layout.addWidget(Label("Du"), 2, 0)
         layout.addWidget(self.from_date_selector, 3, 0)
-        layout.addWidget(FormLabel("Au"), 2, 1)
+        layout.addWidget(Label("Au"), 2, 1)
         layout.addWidget(self.to_date_selector, 3, 1)
         self.period_groupbox.setLayout(layout)
 
         # start button
-        self.start_button = Button("Lancer")
+        self.start_button = PushButton("Lancer")
         self.start_button.setEnabled(False)
         self.start_button.setDefault(True)
         self.start_button.clicked.connect(self.export_requested)
 
         # cancel button
-        self.cancel_btn = CancelButton("Annuler")
+        self.cancel_btn = CancelPushButton("Annuler")
         self.cancel_btn.setEnabled(False)
         self.cancel_btn.clicked.connect(self.cancel_export)
 
@@ -169,7 +170,7 @@ class HomeViewWidget(CWidget):
         self.parentWidget().exporter.check_aggregate_presence()
 
     def display_noaggregate_confirmation(self):
-        if dialogueViewWidget(parent=None).exec_() == QDialog.Accepted:
+        if MissingODKConfirmationWidget(parent=None).exec_() == QDialog.Accepted:
             self.add_progressbar()
             self.start_button.setEnabled(False)
             self.cancel_btn.setEnabled(True)

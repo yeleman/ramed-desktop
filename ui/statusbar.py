@@ -5,13 +5,12 @@
 from PyQt4.QtGui import QStatusBar
 
 
-class GStatusBar(QStatusBar):
+class StatusBar(QStatusBar):
 
     DEFAULT_MESSAGE = ""
 
     def __init__(self, parent):
-
-        QStatusBar.__init__(self, parent)
+        super(QStatusBar, self).__init__(parent)
         self.reset()
 
     def reset(self):

@@ -10,9 +10,9 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.pagesizes import letter
 from path import Path
 
-from tools import create_shortcut
-from tools.ramed_instance import RamedInstance
 from app_logging import logger
+from tools.ramed_instance import RamedInstance
+from tools import create_shortcut
 
 BLANK = "n/c"
 
@@ -342,8 +342,9 @@ def gen_pdf_export(export_folder, instance):
 
     row -= interligne * 2
     c.setFont('Courier-Bold', 11)
-    c.drawString(
-        right_col, row, "LES CHARGES DE L’ENQUETE (Préciser le montant et la période)")
+    c.drawString(right_col, row,
+                 "LES CHARGES DE L’ENQUETE "
+                 "(Préciser le montant et la période)")
     c.setFont('Courier', 10)
 
     row -= interligne
@@ -357,8 +358,9 @@ def gen_pdf_export(export_folder, instance):
     c.drawString(
         right_col, row, "Autres Charges : {}".format(autres_charges))
     row -= interligne
-    c.drawString(
-        right_col, row, "HABITAT : {}".format(concat([type_habitat, materiau_habitat])))
+    c.drawString(right_col, row,
+                 "HABITAT : {}"
+                 .format(concat([type_habitat, materiau_habitat])))
     c.setFont('Courier-Bold', 11)
     row -= interligne * 2
     c.drawString(
