@@ -16,7 +16,9 @@ def main():
     logger.info("startup")
     window = MainWindow(width=400, height=300)
     window.show()
-    sys.exit(app.exec_())
+    ret_code = app.exec_()
+    app.deleteLater()
+    sys.exit(ret_code)
 
 if __name__ == '__main__':
     main()
