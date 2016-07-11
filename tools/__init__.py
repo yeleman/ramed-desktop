@@ -16,12 +16,10 @@ def launch_without_console(command, args):
 
 def create_shortcut(source, destination):
     program = os.path.join(Constants.WORKING_DIR, 'Shortcut.exe')
-    # cmd = '{program} /f:"{destination}" /a:c /t:"{source}"'.format(
-    #     program=program, source=source, destination=destination)
     args = ["/f:{}".format(destination),
             "/a:c",
             "/t:{}".format(source)]
-    if Constants.SYSTEM.lower() == "windows":
+    if Constants.IS_FROZEN:
         launch_without_console(program, args)
     else:
-        subprocess.call(program + " ".join(args))
+        subprocess.call("{} {}".format(program, " ".join(args)))
