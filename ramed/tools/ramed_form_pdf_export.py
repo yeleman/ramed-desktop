@@ -79,9 +79,10 @@ def gen_pdf_export(export_folder, instance):
         return text == 'oui', text
 
     def get_nom(data, p='', s=''):
-        nom = RamedInstance.clean_lastname(data.get('{p}nom{s}'.format(p=p, s=s)))
+        nom = RamedInstance.clean_lastname(
+            data.get('{p}nom{s}'.format(p=p, s=s)))
         prenoms = RamedInstance.clean_firstnames(data.get('{p}prenoms{s}'
-                                                       .format(p=p, s=s)))
+                                                          .format(p=p, s=s)))
         name = RamedInstance.clean_name(nom, prenoms)
         return nom, prenoms, name
 
@@ -210,17 +211,26 @@ def gen_pdf_export(export_folder, instance):
     row -= interligne
     c.drawString(right_col, row, "N° NINA : " + nina)
     row -= interligne
-    c.drawString(right_col, row, "Téléphones : {}".format(
-        ' / '.join(telephones)))
+
+    if telephones == []:
+        c.drawString(right_col, row, BLANK)
+    else:
+        c.drawString(right_col, row, "Téléphones : {}".format(
+            ' / '.join(telephones)))
     row -= interligne
     c.setFont('Courier-Bold', 11)
     c.drawString(right_col, row, 'COMPOSITION DE LA FAMILLE :')
     row -= interligne
     c.drawCentredString(width / 2, row, 'Situation des Epouses :')
     row -= interligne
+    c.setFont('Courier', 10)
 
     # epouses
     epouses = instance.get('epouses', [])
+    if epouses == []:
+        c.drawString(right_col, row, BLANK)
+        row -= interligne
+
     for nb, epouse in enumerate(epouses):
         nom_epouse, prenoms_epouse, name_epouse = get_nom(epouse, p='e_')
         nom_pere_epouse, prenoms_pere_epouse, name_pere_epouse = get_nom(
@@ -300,6 +310,7 @@ def gen_pdf_export(export_folder, instance):
 
     # autres
     autres = instance.get('autres', [])
+
     if autres == []:
         c.drawString(right_col, row, BLANK)
         row -= interligne
