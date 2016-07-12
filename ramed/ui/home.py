@@ -175,13 +175,13 @@ class HomeWidget(BaseWidget):
 
     def display_missing_aggregate_confirmation(self):
         if MissingODKConfirmationWidget().exec_() == QDialog.Accepted:
-            self.add_progressbar()
-            self.start_button.setEnabled(False)
-            self.cancel_button.setEnabled(True)
             self.start_export()
 
     def start_export(self):
         logger.debug("Lancement ...")
+        self.add_progressbar()
+        self.start_button.setEnabled(False)
+        self.cancel_button.setEnabled(True)
         self.parentWidget().exporter.parse(
             destination_folder=self.destination_folder,
             fname=self.json_fpath,
