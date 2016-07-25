@@ -42,7 +42,7 @@ class Constants(object):
     APP_NAME = "RAMED Desktop"
     APP_TITLE = "Export des fichiers de collecte RAMED"
 
-    APP_VERSION = "1.2"
+    APP_VERSION = "1.3"
     APP_DATE = "juillet 2016"
 
     IMAGES_FOLDER = os.path.join("media", "img")
