@@ -6,3 +6,4 @@ ijson==2.3
 requests==2.10.0
 PyPDF2==1.26.0
 Path.py==8.2.1
+simplejson==3.8.2

@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 
-import json
-
+import simplejson as json
 import ijson
 import requests
 import copy
@@ -166,6 +165,7 @@ class RamedExporter(QObject):
                 try:
                     self.export_single_instance(instance)
                 except:
+                    # raise
                     nb_instances_failed += 1
                     # don't fetch medias for failed exports
                     self.instance_completed.emit(True, counter)
