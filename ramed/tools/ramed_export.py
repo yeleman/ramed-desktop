@@ -161,21 +161,6 @@ class RamedExporter(QObject):
                     nb_instances_failed += 1
                     continue
 
-                self.exporting_instance.emit(instance.ident, counter)
-                try:
-                    self.export_single_instance(instance)
-                except:
-                    # raise
-                    nb_instances_failed += 1
-                    # don't fetch medias for failed exports
-                    self.instance_completed.emit(True, counter)
-                    continue
-                else:
-                    nb_instances_successful += 1
-
-                if self.cancel_requested:
-                    break
-
                 try:
                     medias = self.export_instance_medias(instance)
                 except:
@@ -192,6 +177,20 @@ class RamedExporter(QObject):
                 if self.cancel_requested:
                     break
 
+                self.exporting_instance.emit(instance.ident, counter)
+                try:
+                    self.export_single_instance(instance)
+                except:
+                    raise
+                    nb_instances_failed += 1
+                    # don't fetch medias for failed exports
+                    self.instance_completed.emit(True, counter)
+                    continue
+                else:
+                    nb_instances_successful += 1
+
+                if self.cancel_requested:
+                    break
                 self.instance_completed.emit(True, counter)
 
         if self.cancel_requested:

@@ -16,6 +16,7 @@ def launch_without_console(command, args):
 
 def create_shortcut(source, destination):
     program = os.path.join(Constants.WORKING_DIR, 'Shortcut.exe')
+
     args = ["/f:{}".format(destination),
             "/a:c",
             "/t:{}".format(source)]
